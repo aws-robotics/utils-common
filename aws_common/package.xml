@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>aws_common</name>
+  <version>1.0.0</version>
+  <description>Common AWS SDK utilities, intended for use by ROS packages using the AWS SDK</description>
+  <url>http://wiki.ros.org/aws_common</url>
+  <author email="ros-contributions@amazon.com">AWS RoboMaker</author>
+  <maintainer email="ros-contributions@amazon.com">AWS RoboMaker</maintainer>
+  <license>Apache 2.0</license>
+  <buildtool_depend>cmake</buildtool_depend>
+  <test_depend>gtest</test_depend>
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>
