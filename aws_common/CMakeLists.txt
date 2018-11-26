@@ -81,7 +81,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 enable_testing()
 find_package(GTest QUIET)
 if(NOT GTEST_FOUND)
-  message(WARNING "Could not find GTest. Not building unit tests.")
+  message(STATUS "Could not find GTest. Not building unit tests.")
 else()
   add_executable(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
   target_include_directories(test_aws_log_system PRIVATE ${aws_common_INCLUDE_DIRS})
