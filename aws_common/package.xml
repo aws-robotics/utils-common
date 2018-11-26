@@ -11,6 +11,7 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>cmake</buildtool_depend>
+  <buildtool_depend>git</buildtool_depend>
 
   <build_depend>catkin</build_depend>
   <build_depend>ros_environment</build_depend>
