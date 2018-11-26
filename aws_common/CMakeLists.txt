@@ -9,6 +9,8 @@ if (DEFINED ENV{ROS_DISTRO})
 endif()
 if (DEFINED ENV{ROS_VERSION})
     add_definitions(-DCMAKE_ROS_VERSION="$ENV{ROS_VERSION}")
+else()
+    add_definitions(-DCMAKE_ROS_VERSION="1")
 endif()
 
 if(NOT EXTERNAL_INSTALL_LOCATION)
