@@ -12,12 +12,12 @@
 
   <buildtool_depend>cmake</buildtool_depend>
 
+  <build_depend>catkin</build_depend>
+  <build_depend>ros_environment</build_depend>
   <depend>zlib</depend>
   <depend>uuid</depend>
   <depend>curl</depend>
   <depend>libssl-dev</depend>
-  <build_depend>ros_environment</build_depend>
-  <build_depend>catkin</build_depend>
 
   <test_depend>gtest</test_depend>
   <export>
