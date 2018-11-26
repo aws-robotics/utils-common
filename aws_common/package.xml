@@ -16,7 +16,8 @@
   <depend>uuid</depend>
   <depend>curl</depend>
   <depend>libssl-dev</depend>
-  <depend>ros_environment</depend>
+  <build_depend>ros_environment</build_depend>
+  <build_depend>catkin</build_depend>
 
   <test_depend>gtest</test_depend>
   <export>
