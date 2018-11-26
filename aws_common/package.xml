@@ -15,6 +15,7 @@
   <depend>zlib</depend>
   <depend>uuid</depend>
   <depend>curl</depend>
+  <depend>openssl</depend>
 
   <test_depend>gtest</test_depend>
   <export>
