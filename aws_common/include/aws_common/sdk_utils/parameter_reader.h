@@ -30,19 +30,21 @@ public:
      * @param name Parameter name, which in practice would be the path of the parameter, e.g. config/timeoutMs.
      */
     ParameterPath(const char * name) : name_(name) {}
+
     /**
      * @example The parameter under node "lidar_node" in namespace "sensor_nodes",
      * with parameter namespace "settings" and parameter key "frequency", should be specified as follows:
      *   node_namespace: ["sensor_nodes", "lidar_node"]
      *   parameter_path_keys: ["settings", "frequency"]
-     * @note Node namespaces can be empty if used by a node looking for a parameter of its own.
+     * @note Node namespaces should be empty if used by a node looking for a parameter of its own (a local parameter).
      * @param node_namespaces
      * @param parameter_path_keys
      */
     ParameterPath(const std::vector<std::string> & node_namespaces, const std::vector<std::string> & parameter_path_keys) :
       node_namespaces_(node_namespaces), parameter_path_keys_(parameter_path_keys) {}
+
     /**
-     * @example The local parameter "timeout" under parameter namespace "config" should be specified as follows:
+     * @example The local parameter "timeout" in parameter namespace "config" should be specified as follows:
      *   ParameterPath("config", "timeout")
      * @tparam Args
      * @param parameter_path_keys
@@ -52,10 +54,9 @@ public:
       parameter_path_keys_(std::vector<std::string>{(parameter_path_keys)...}) {}
 
     /**
-     * Returns the parameter's whereabouts in the node namespace hierarchy.
      * @note Only applies if node_namespaces was specified during construction; otherwise, an empty string is returned.
      * @param node_namespace_separator
-     * @return
+     * @return string The parameter's whereabouts in the node namespace hierarchy.
      */
     std::string get_node_path(char node_namespace_separator) const
     {
@@ -70,10 +71,9 @@ public:
         return resolved_path;
     }
     /**
-     * Return the parameter path including parameter namespaces but excluding node's namespaces.
      * @note Only applies if parameter_path_keys was specified during construction; otherwise, an empty string is returned.
      * @param parameter_namespace_separator
-     * @return
+     * @return string The parameter path including parameter namespaces but excluding node's namespaces.
      */
     std::string get_local_path(char parameter_namespace_separator) const
     {
