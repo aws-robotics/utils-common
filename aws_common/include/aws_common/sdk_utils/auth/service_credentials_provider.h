@@ -130,6 +130,8 @@ protected:
   bool ValidateResponse(Aws::Utils::Json::JsonValue & value);
   /// \brief Returns true if the credentials have expired
   bool IsTimeExpired();
+  /// Current cached credentials
+  Aws::Auth::AWSCredentials cached_;
 
 private:
   /// Configuration for connecting to IoT
@@ -138,8 +140,6 @@ private:
   std::mutex creds_mutex_;
   /// Future epoch when the cached credentials will expire
   std::atomic<double> expiry_;
-  /// Current cached credentials
-  Aws::Auth::AWSCredentials cached_;
 };
 
 /**

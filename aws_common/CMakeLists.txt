@@ -83,6 +83,12 @@ find_package(GTest QUIET)
 if(NOT GTEST_FOUND)
   message(STATUS "Could not find GTest. Not building unit tests.")
 else()
+  include_directories(/usr/include/gmock /usr/src/gmock)
+  add_library(libgmock /usr/src/gmock/src/gmock-all.cc)
+
+  add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
+  target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
+
   add_executable(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
   target_include_directories(test_aws_log_system PRIVATE ${aws_common_INCLUDE_DIRS})
   target_link_libraries(test_aws_log_system
@@ -94,13 +100,34 @@ else()
 
   add_executable(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
   target_include_directories(test_throttling_manager PRIVATE ${aws_common_INCLUDE_DIRS} ${AWSSDK_INCLUDE_DIR})
-
   target_link_libraries(test_throttling_manager
         ${GTEST_LIBRARIES}
         pthread
         ${aws_common_LIBRARIES}
         ${PROJECT_NAME})
   add_test(NAME test_throttling_manager COMMAND test_throttling_manager --gtest_output=xml:test_results/)
+
+  add_executable(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
+  target_include_directories(test_client_configuration_provider PRIVATE ${aws_common_INCLUDE_DIRS})
+  target_link_libraries(test_client_configuration_provider
+         ${GTEST_LIBRARIES}
+         pthread
+         libgmock
+         test_utils
+         ${aws_common_LIBRARIES}
+         ${PROJECT_NAME})
+  add_test(NAME test_client_configuration_provider COMMAND test_client_configuration_provider --gtest_output=xml:test_results/)
+
+  add_executable(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
+  target_include_directories(test_service_credentials_provider PRIVATE ${aws_common_INCLUDE_DIRS})
+  target_link_libraries(test_service_credentials_provider
+         ${GTEST_LIBRARIES}
+         pthread
+         libgmock
+         test_utils
+         ${aws_common_LIBRARIES}
+         ${PROJECT_NAME})
+  add_test(NAME test_service_credentials_provider COMMAND test_service_credentials_provider --gtest_output=xml:test_results/)
 endif()
 
 #############
