@@ -122,7 +122,7 @@ TEST(ThrottlingManagerTest, multiThreadedClientThrottling)
     t.join();
   }
   int expected_non_throttled_call_count = std::ceil(max_tps * milliseconds_to_run / (float) 1000);
-  ASSERT_LE(throttled_client.BaseClient::throttled_function_call_count,
+  ASSERT_LE(throttled_client.BaseClient::throttled_function_call_count_,
             expected_non_throttled_call_count);
 }
 
