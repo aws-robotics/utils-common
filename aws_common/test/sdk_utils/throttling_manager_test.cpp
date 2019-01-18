@@ -109,7 +109,7 @@ void MakeCalls(ThrottledClient * throttled_client, std::chrono::milliseconds dur
  */
 TEST(ThrottlingManagerTest, multiThreadedClientThrottling)
 {
-  int milliseconds_to_run = 3500, sleep_duration_in_us = 150, max_tps = 125;
+  const int milliseconds_to_run = 3500, sleep_duration_in_us = 150, max_tps = 125;
   int threads_to_spawn = std::max((unsigned int)2, std::thread::hardware_concurrency());
   ThrottledClient throttled_client(max_tps);
   std::vector<std::thread> threads;
@@ -121,7 +121,7 @@ TEST(ThrottlingManagerTest, multiThreadedClientThrottling)
   for (auto & t : threads) {
     t.join();
   }
-  int expected_non_throttled_call_count = max_tps * milliseconds_to_run / 1000;
+  int expected_non_throttled_call_count = std::ceil(max_tps * milliseconds_to_run / (float) 1000);
   ASSERT_LE(throttled_client.BaseClient::throttled_function_call_count_,
             expected_non_throttled_call_count);
 }
