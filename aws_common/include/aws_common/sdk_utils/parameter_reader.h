@@ -90,28 +90,18 @@ public:
     /**
      * Resolves & returns the parameter's path. Supports two separate use cases:
      *  1. A single, 'flat' string was provided upon construction.
-     *    In this case, we return it as is, while converting node namespaces to parameter namespaces if needed.
+     *    In this case, we return it as is.
      *  2. Detailed lists of strings were specified for the parameter & node namespaces.
-     *    In this case, we construct the resolved path using the provided separators. Conversion would not apply.
+     *    In this case, we construct the resolved path using the provided separators.
      * @param node_namespace_separator
      * @param parameter_namespace_separator
-     * @param convert_node_ns_to_parameter_ns Only applies if the path was specified as a single string,
-     *   and the string contains node separators but does not contain any parameter separators.
      * @return string representing the full, resolved path of the parameter.
      * @note If node_namespaces and parameter_path_keys are empty, an empty string would be returned.
      */
     std::string get_resolved_path(char node_namespace_separator,
-                                  char parameter_namespace_separator,
-                                  bool convert_node_ns_to_parameter_ns = true) const
+                                  char parameter_namespace_separator) const
     {
       if (!name_.empty()) {
-        if (convert_node_ns_to_parameter_ns &&
-            std::string::npos != name_.find(node_namespace_separator) &&
-            std::string::npos == name_.find(parameter_namespace_separator)) {
-          /* Convert node namespaces to parameter namespaces. */
-            std::replace(name_.begin(), name_.end(),
-                         node_namespace_separator, parameter_namespace_separator);
-        }
         return name_;
       } else {
           std::string resolved_path = get_node_path(node_namespace_separator);
@@ -123,6 +113,12 @@ public:
       }
     }
 private:
+    /**
+     * Member variables to store the parameter's path in the namespace hierarchy.
+     * parameter_path_keys_ Parameter namespaces list.
+     * node_namespaces_ Node namespaces list.
+     * name_ A single string. Used when simpler initialization is required, instead of the aforementioned namespace lists.
+     */
     const std::vector<std::string> parameter_path_keys_;
     const std::vector<std::string> node_namespaces_;
     mutable std::string name_;
