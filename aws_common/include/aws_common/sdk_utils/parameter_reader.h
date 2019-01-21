@@ -132,8 +132,9 @@ public:
   /**
    * read a list from the provided parameter name
    * @param name the name of the parameter to be read
-   * @param out the output of 'double' type
+   * @param out the output of 'double' type.
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
+   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadList(const ParameterPath & parameter_path, std::vector<std::string> & out) const = 0;
 
@@ -142,6 +143,7 @@ public:
    * @param parameter_path an object representing the path of the parameter to be read
    * @param out the output of 'double' type
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
+   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadDouble(const ParameterPath & parameter_path, double & out) const = 0;
 
@@ -150,6 +152,7 @@ public:
    * @param parameter_path an object representing the path of the parameter to be read
    * @param out the output of 'int' type
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
+   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadInt(const ParameterPath & parameter_path, int & out) const = 0;
 
@@ -158,6 +161,7 @@ public:
    * @param parameter_path an object representing the path of the parameter to be read
    * @param out the output of 'bool' type
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
+   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadBool(const ParameterPath & parameter_path, bool & out) const = 0;
 
@@ -166,6 +170,7 @@ public:
    * @param parameter_path an object representing the path of the parameter to be read
    * @param out the output of 'Aws::String' type
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
+   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadString(const ParameterPath & parameter_path, Aws::String & out) const = 0;
 
@@ -174,6 +179,7 @@ public:
    * @param parameter_path an object representing the path of the parameter to be read
    * @param out the output of 'std::string' type
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
+   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadStdString(const ParameterPath & parameter_path, std::string & out) const = 0;
 
@@ -182,6 +188,7 @@ public:
    * @param parameter_path an object representing the path of the parameter to be read
    * @param out the output of 'std::map' type
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
+   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadMap(const ParameterPath & parameter_path, std::map<std::string, std::string> & out) const = 0;
 };
