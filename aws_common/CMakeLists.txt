@@ -20,25 +20,12 @@ if(NOT EXTERNAL_INSTALL_LOCATION)
   set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 endif()
 
-if(EXISTS "${EXTERNAL_INSTALL_LOCATION}/${CMAKE_INSTALL_LIBDIR}/cmake/AWSSDK")
-  message(STATUS "Using existing, local AWSSDK installation at ${EXTERNAL_INSTALL_LOCATION}")
-  set(AWSSDK_DIR "${EXTERNAL_INSTALL_LOCATION}/${CMAKE_INSTALL_LIBDIR}/cmake/AWSSDK")
-  set(AWSSDK_ROOT_DIR ${EXTERNAL_INSTALL_LOCATION})
-endif()
-
-find_package(AWSSDK QUIET PATHS ${CMAKE_INSTALL_PREFIX} NO_DEFAULT_PATH)
+## Add AWS SDK libraries
 set(SERVICE "core" "logs" "monitoring" "s3" "kinesis" "iot" "lex" "polly")
 foreach(_service ${SERVICE})
   list(APPEND ${PROJECT_NAME}_IMPORTED_LIBRARIES "aws-cpp-sdk-${_service}")
 endforeach()
-
-if(AWSSDK_FOUND)
-  set(SERVICE_NEEDED_FOR_TARGET core)
-  AWSSDK_DETERMINE_LIBS_TO_LINK(SERVICE_NEEDED_FOR_TARGET AWSSDK_LIBS)
-  link_directories("${AWSSDK_LIB_DIR}")
-else()
-  set(AWSSDK_LIBS ${${PROJECT_NAME}_IMPORTED_LIBRARIES})
-endif()
+add_subdirectory(awssdk)
 
 include_directories(include)
 ## Declare a C++ library
@@ -47,12 +34,7 @@ add_library(${PROJECT_NAME} SHARED
   src/sdk_utils/client_configuration_provider.cpp
   src/sdk_utils/logging/aws_log_system.cpp
   src/sdk_utils/auth/service_credentials_provider.cpp)
-
-## Add AWS SDK libraries
-if(NOT AWSSDK_FOUND)
-  add_subdirectory(awssdk)
-  add_dependencies(${PROJECT_NAME} AWS_SDK_IMPORT)
-endif()
+add_dependencies(${PROJECT_NAME} AWS_SDK_IMPORT)
 
 foreach(_imported_lib ${${PROJECT_NAME}_IMPORTED_LIBRARIES})
   if(NOT TARGET ${_imported_lib})
@@ -68,7 +50,7 @@ foreach(_imported_lib ${${PROJECT_NAME}_IMPORTED_LIBRARIES})
 endforeach()
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME} ${AWSSDK_LIBS})
+target_link_libraries(${PROJECT_NAME} ${${PROJECT_NAME}_IMPORTED_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${AWSSDK_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
