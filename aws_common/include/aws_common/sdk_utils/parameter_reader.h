@@ -121,7 +121,7 @@ private:
      */
     const std::vector<std::string> parameter_path_keys_;
     const std::vector<std::string> node_namespaces_;
-    mutable std::string name_;
+    const std::string name_;
 };
 
 class ParameterReaderInterface
