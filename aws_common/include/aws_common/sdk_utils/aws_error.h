@@ -49,6 +49,8 @@ enum AwsError {
      action/event */
   AWS_ERR_NOT_ENOUGH_SPACE,
   /** An error indicating that a data structure is empty. */
-  AWS_ERR_EMPTY
+  AWS_ERR_EMPTY,
+  /** The feature is not supported. */
+  AWS_ERR_NOT_SUPPORTED,
 };
 }  // namespace Aws
