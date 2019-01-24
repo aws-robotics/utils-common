@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>aws_common</name>
   <version>2.0.0</version>
   <description>Common AWS SDK utilities, intended for use by ROS packages using the AWS SDK</description>
@@ -13,14 +13,15 @@
   <buildtool_depend>cmake</buildtool_depend>
   <buildtool_depend>git</buildtool_depend>
 
-  <build_depend>catkin</build_depend>
+  <build_depend condition="$ROS_VERSION == 1">catkin</build_depend>
   <build_depend>ros_environment</build_depend>
   <depend>zlib</depend>
   <depend>uuid</depend>
   <depend>curl</depend>
   <depend>libssl-dev</depend>
 
-  <test_depend>gtest</test_depend>
+  <test_depend condition="$ROS_VERSION == 1">gtest</test_depend>
+  <test_depend condition="$ROS_VERSION == 1">google-mock</test_depend>
   <export>
     <build_type>cmake</build_type>
   </export>
