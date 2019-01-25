@@ -16,7 +16,7 @@ env:
     - ROS_DISTRO="lunar"   ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
     - ROS_DISTRO="melodic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
     - ROS_DISTRO="melodic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
-global:
+  global:
     - AFTER_SCRIPT='if [ -z "$PRERELEASE" ] || [ "$PRERELEASE" != true ]; then cd ~/catkin_ws && catkin build --pre-clean --catkin-make-args run_tests && catkin_test_results --verbose; fi;'
 matrix:
   allow_failures:
