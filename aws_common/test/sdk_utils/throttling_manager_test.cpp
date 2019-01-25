@@ -18,6 +18,7 @@
 
 #include <atomic>
 #include <thread>
+#include <cmath>
 
 enum class DummyClientErrors { THROTTLING_ERROR };
 typedef Aws::Utils::Outcome<int, Aws::Client::AWSError<DummyClientErrors>> DummyOutcome;
