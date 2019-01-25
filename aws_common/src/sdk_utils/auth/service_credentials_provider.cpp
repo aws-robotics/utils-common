@@ -356,13 +356,14 @@ bool IotRoleCredentialsProvider::ValidateResponse(Json::JsonValue & value)
     return false;
   }
 
-  if (!value.ValueExists(FIELD_CREDENTIALS)) {
+  auto value_view = value.View();
+  if (!value_view.ValueExists(FIELD_CREDENTIALS)) {
     AWS_LOG_ERROR(AWS_LOG_TAG, "Unable to find %s field in AWS IoT credential provider response",
                   FIELD_CREDENTIALS);
     return false;
   }
 
-  auto creds = value.GetObject(FIELD_CREDENTIALS);
+  auto creds = value_view.GetObject(FIELD_CREDENTIALS);
 
   if (!creds.IsObject()) {
     AWS_LOG_ERROR(AWS_LOG_TAG, "Expected object for %s in AWS IoT credential provider response",
@@ -467,7 +468,7 @@ void IotRoleCredentialsProvider::Refresh()
     auto value = ctx.GetValue();
     if (!ValidateResponse(value)) goto cleanup_curl;
 
-    auto creds_obj = value.GetObject(FIELD_CREDENTIALS);
+    auto creds_obj = value.View().GetObject(FIELD_CREDENTIALS);
 
     // Retrieve expiration date
     auto expires_str = creds_obj.GetString(FIELD_EXPIRATION);
