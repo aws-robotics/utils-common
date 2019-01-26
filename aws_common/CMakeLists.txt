@@ -79,56 +79,64 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 ### Tests ###
 #############
 enable_testing()
-find_package(GTest QUIET)
-if(NOT GTEST_FOUND)
-  message(STATUS "Could not find GTest. Not building unit tests.")
+find_package(catkin QUIET)
+find_package(ament_cmake_gtest QUIET)
+if(catkin_FOUND)
+  if(NOT GMOCK_FOUND AND NOT TARGET gmock)
+    include_directories(/usr/include/gmock /usr/src/gmock)
+    add_library(gmock /usr/src/gmock/src/gmock-all.cc)
+  endif()
+  catkin_destinations()
+  if(CATKIN_ENABLE_TESTING)
+      message(STATUS "Building tests using catkin")
+      catkin_add_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
+      catkin_add_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
+      catkin_add_gtest(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
+      catkin_add_gtest(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
+  endif()
+elseif(ament_cmake_gtest_FOUND)
+  find_package(ament_cmake_gmock REQUIRED)
+  message(STATUS "Building tests using ament")
+  ament_add_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
+  ament_add_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
+  ament_add_gmock(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
+  ament_add_gmock(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
 else()
-  include_directories(/usr/include/gmock /usr/src/gmock)
-  add_library(libgmock /usr/src/gmock/src/gmock-all.cc)
-
-  add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
-  target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
-
-  add_executable(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
-  target_include_directories(test_aws_log_system PRIVATE ${aws_common_INCLUDE_DIRS})
-  target_link_libraries(test_aws_log_system
-        ${GTEST_LIBRARIES}
-        pthread
-        ${aws_common_LIBRARIES}
-        ${PROJECT_NAME})
-  add_test(NAME test_aws_log_system COMMAND test_aws_log_system --gtest_output=xml:test_results/)
-
-  add_executable(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
-  target_include_directories(test_throttling_manager PRIVATE ${aws_common_INCLUDE_DIRS} ${AWSSDK_INCLUDE_DIR})
-  target_link_libraries(test_throttling_manager
-        ${GTEST_LIBRARIES}
-        pthread
-        ${aws_common_LIBRARIES}
-        ${PROJECT_NAME})
-  add_test(NAME test_throttling_manager COMMAND test_throttling_manager --gtest_output=xml:test_results/)
-
-  add_executable(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
-  target_include_directories(test_client_configuration_provider PRIVATE ${aws_common_INCLUDE_DIRS})
-  target_link_libraries(test_client_configuration_provider
-         ${GTEST_LIBRARIES}
-         pthread
-         libgmock
-         test_utils
-         ${aws_common_LIBRARIES}
-         ${PROJECT_NAME})
-  add_test(NAME test_client_configuration_provider COMMAND test_client_configuration_provider --gtest_output=xml:test_results/)
-
-  add_executable(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
-  target_include_directories(test_service_credentials_provider PRIVATE ${aws_common_INCLUDE_DIRS})
-  target_link_libraries(test_service_credentials_provider
-         ${GTEST_LIBRARIES}
-         pthread
-         libgmock
-         test_utils
-         ${aws_common_LIBRARIES}
-         ${PROJECT_NAME})
-  add_test(NAME test_service_credentials_provider COMMAND test_service_credentials_provider --gtest_output=xml:test_results/)
+  message(STATUS "Not building tests as neither catkin nor ament were found.")
 endif()
+
+if(DEFINED GMOCK_LIBRARIES)
+  set(GMOCK_LIBRARY ${GMOCK_LIBRARIES})
+else()
+  set(GMOCK_LIBRARY gmock)
+endif()
+
+add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
+target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
+
+set(LIBS_FOR_TESTS 
+     ${GTEST_LIBRARIES}
+     pthread
+     ${GMOCK_LIBRARY}
+     test_utils
+     ${aws_common_LIBRARIES}
+     ${PROJECT_NAME})
+     
+set(HEADERS_FOR_TESTS
+     ${aws_common_INCLUDE_DIRS}
+     ${AWSSDK_INCLUDE_DIR})
+
+macro(link_test_target target_name)
+  if(TARGET ${target_name})
+    target_include_directories("${target_name}" PRIVATE ${HEADERS_FOR_TESTS})
+    target_link_libraries("${target_name}" ${LIBS_FOR_TESTS})
+  endif()
+endmacro()
+
+link_test_target(test_aws_log_system)
+link_test_target(test_throttling_manager)
+link_test_target(test_client_configuration_provider)
+link_test_target(test_service_credentials_provider)
 
 #############
 ## Install ##
