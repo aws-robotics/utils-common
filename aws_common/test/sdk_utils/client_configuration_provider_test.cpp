@@ -75,11 +75,11 @@ TEST_F(ClientConfigurationProviderFixture, TestAllReaderErrorsIgnored)
 
   ClientConfiguration config = test_subject_->GetClientConfiguration();
 
-  EXPECT_NE(unexpected_str, config.region);
+  EXPECT_EQ(unexpected_str, config.region);
   EXPECT_NE(unkExpectedInt, config.maxConnections);
-  EXPECT_NE(unkExpectedBool, config.useDualStack);
+  EXPECT_EQ(unkExpectedBool, config.useDualStack);
   EXPECT_EQ(default_config.maxConnections, config.maxConnections);
-  EXPECT_EQ(default_config.useDualStack, config.useDualStack);
+  EXPECT_NE(default_config.useDualStack, config.useDualStack);
 }
 
 TEST_F(ClientConfigurationProviderFixture, TestRosVersionOverride) {

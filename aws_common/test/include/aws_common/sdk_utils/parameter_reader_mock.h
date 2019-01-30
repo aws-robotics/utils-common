@@ -30,6 +30,9 @@ public:
   MOCK_CONST_METHOD2(ReadString, Aws::AwsError(const char *, Aws::String &));
   MOCK_CONST_METHOD2(ReadStdString, Aws::AwsError(const char *, std::string &));
   MOCK_CONST_METHOD2(ReadMap, Aws::AwsError(const char *, std::map<std::string, std::string> &));
+
+private:
+  MOCK_CONST_METHOD1(FormatParameterPath, std::string(const ParameterPath &));
 };
 
 }  // namespace Client
