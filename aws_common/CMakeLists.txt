@@ -30,6 +30,7 @@ add_subdirectory(awssdk)
 include_directories(include)
 ## Declare a C++ library
 add_library(${PROJECT_NAME} SHARED
+  src/sdk_utils/parameter_path.cpp
   src/sdk_utils/aws_profile_provider.cpp
   src/sdk_utils/client_configuration_provider.cpp
   src/sdk_utils/logging/aws_log_system.cpp
