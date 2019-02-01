@@ -18,10 +18,11 @@
 #include <aws_common/sdk_utils/client_configuration_provider.h>
 
 using namespace Aws::Client;
+using ::testing::_;
+using ::testing::Matcher;
 using ::testing::DoAll;
 using ::testing::SetArgReferee;
 using ::testing::Return;
-using ::testing::_;
 using Aws::AwsError;
 
 class ClientConfigurationProviderFixture : public ::testing::Test
@@ -39,17 +40,17 @@ TEST_F(ClientConfigurationProviderFixture, TestReaderRespected)
   const int kExpectedInt = 64654;
   const bool kExpectedBool = true;
 
-  EXPECT_CALL(*param_reader_, ReadList(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<std::vector<std::string> &>(_)))
    .WillRepeatedly(Return(AwsError::AWS_ERR_OK));
-  EXPECT_CALL(*param_reader_, ReadDouble(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<double &>(_)))
    .WillRepeatedly(Return(AwsError::AWS_ERR_OK));
-  EXPECT_CALL(*param_reader_, ReadStdString(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<std::string &>(_)))
    .WillRepeatedly(Return(AwsError::AWS_ERR_OK));
-  EXPECT_CALL(*param_reader_, ReadString(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<Aws::String &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(expected_str), Return(AwsError::AWS_ERR_OK)));
-  EXPECT_CALL(*param_reader_, ReadInt(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<int &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(kExpectedInt), Return(AwsError::AWS_ERR_OK)));
-  EXPECT_CALL(*param_reader_, ReadBool(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<bool &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(kExpectedBool), Return(AwsError::AWS_ERR_OK)));
 
   ClientConfiguration config = test_subject_->GetClientConfiguration();
@@ -66,11 +67,11 @@ TEST_F(ClientConfigurationProviderFixture, TestAllReaderErrorsIgnored)
   const int unkExpectedInt = default_config.maxConnections + 45231;
   const bool unkExpectedBool = !default_config.useDualStack;
 
-  EXPECT_CALL(*param_reader_, ReadString(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<Aws::String &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(unexpected_str), Return(AwsError::AWS_ERR_FAILURE)));
-  EXPECT_CALL(*param_reader_, ReadInt(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<int &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(unkExpectedInt), Return(AwsError::AWS_ERR_NOT_FOUND)));
-  EXPECT_CALL(*param_reader_, ReadBool(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<bool &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(unkExpectedBool), Return(AwsError::AWS_ERR_EMPTY)));
 
   ClientConfiguration config = test_subject_->GetClientConfiguration();
@@ -83,11 +84,11 @@ TEST_F(ClientConfigurationProviderFixture, TestAllReaderErrorsIgnored)
 }
 
 TEST_F(ClientConfigurationProviderFixture, TestRosVersionOverride) {
-  EXPECT_CALL(*param_reader_, ReadString(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<Aws::String &>(_)))
     .WillRepeatedly(Return(AwsError::AWS_ERR_NOT_FOUND));
-  EXPECT_CALL(*param_reader_, ReadInt(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<int &>(_)))
     .WillRepeatedly(Return(AwsError::AWS_ERR_NOT_FOUND));
-  EXPECT_CALL(*param_reader_, ReadBool(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<bool &>(_)))
     .WillRepeatedly(Return(AwsError::AWS_ERR_NOT_FOUND));
 
   ClientConfiguration config1 = test_subject_->GetClientConfiguration();

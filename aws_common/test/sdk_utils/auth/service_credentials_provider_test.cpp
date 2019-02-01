@@ -24,10 +24,11 @@ using namespace Aws::Client;
 using namespace Aws::Utils;
 using namespace Aws::Auth;
 using namespace Aws::Utils::Json;
+using ::testing::_;
+using ::testing::Matcher;
 using ::testing::DoAll;
 using ::testing::SetArgReferee;
 using ::testing::Return;
-using ::testing::_;
 using ::testing::NiceMock;
 using Aws::AwsError;
 
@@ -95,7 +96,7 @@ const std::list<std::string> ServiceCredentialsProviderFixture::kFullCredentials
 
 TEST_F(ServiceCredentialsProviderFixture, TestGetServiceAuthConfigNoIotConfig)
 {
-  EXPECT_CALL(*param_reader_, ReadMap(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<std::map<std::string, std::string> &>(_)))
     .WillRepeatedly(Return(AwsError::AWS_ERR_NOT_FOUND));
 
   ServiceAuthConfig config; 
@@ -113,7 +114,7 @@ TEST_P(TestGetServiceAuthConfigFixture, TestGetServiceAuthConfigPartialIotConfig
   auto missing_config_key = GetParam();
   auto partial_iot_config = std::map<std::string, std::string>(kFullIotConfigMap);
   partial_iot_config.erase(missing_config_key);
-  EXPECT_CALL(*param_reader_, ReadMap(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<std::map<std::string, std::string> &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(partial_iot_config), Return(AwsError::AWS_ERR_OK)));
 
   ServiceAuthConfig config; 
@@ -130,7 +131,7 @@ INSTANTIATE_TEST_CASE_P(
 
 TEST_F(ServiceCredentialsProviderFixture, TestGetServiceAuthConfigCompleteIotConfig)
 {
-  EXPECT_CALL(*param_reader_, ReadMap(::testing::_, ::testing::_ ))
+  EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<std::map<std::string, std::string> &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(kFullIotConfigMap), Return(AwsError::AWS_ERR_OK)));
 
   ServiceAuthConfig config; 

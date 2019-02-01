@@ -14,6 +14,7 @@
  */
 
 #pragma once
+
 #include <aws/core/client/ClientConfiguration.h>
 #include <aws/core/utils/StringUtils.h>
 #include <aws_common/sdk_utils/aws_error.h>
@@ -115,7 +116,6 @@ class ParameterReaderInterface
 public:
   virtual ~ParameterReaderInterface() = default;
 
-
   /**
    * read a list from the provided parameter name
    * @param name the name of the parameter to be read
@@ -123,74 +123,7 @@ public:
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
-  virtual AwsError ReadList(const char * name, std::vector<std::string> & out) const = 0;
-
-  /**
-   * read a double value from the provided parameter name
-   * @param name the name of the parameter to be read
-   * @param out the output of 'double' type
-   * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
-   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
-   */
-  virtual AwsError ReadDouble(const char * name, double & out) const = 0;
-
-  /**
-   * read an integer value from the provided parameter name
-   * @param name the name of the parameter to be read
-   * @param out the output of 'int' type
-   * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
-   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
-   */
-  virtual AwsError ReadInt(const char * name, int & out) const = 0;
-
-  /**
-   * read a boolean value from the provided parameter name
-   * @param name the name of the parameter to be read
-   * @param out the output of 'bool' type
-   * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
-   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
-   */
-  virtual AwsError ReadBool(const char * name, bool & out) const = 0;
-
-  /**
-   * read a string value from the provided parameter name
-   * @param name the name of the parameter to be read
-   * @param out the output of 'Aws::String' type
-   * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
-   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
-   */
-  virtual AwsError ReadString(const char * name, Aws::String & out) const = 0;
-
-  /**
-   * read a string from the provided parameter name
-   * @param name the name of the parameter to be read
-   * @param out the output of 'std::string' type
-   * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
-   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
-   */
-  virtual AwsError ReadStdString(const char * name, std::string & out) const = 0;
-
-  /**
-   * read a map from the provided parameter name
-   * @param name the name of the parameter to be read
-   * @param out the output of 'std::map' type
-   * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
-   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
-   */
-  virtual AwsError ReadMap(const char * name, std::map<std::string, std::string> & out) const = 0;
-
-
-  /**
-   * read a list from the provided parameter name
-   * @param name the name of the parameter to be read
-   * @param out the output of 'double' type.
-   * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
-   * @note if the return code is not AWS_ERR_OK, out remains unchanged.
-   */
-  AwsError ReadList(const ParameterPath & param_path, std::vector<std::string> & out) const
-  {
-    return ReadList(FormatParameterPath(param_path).c_str(), out);
-  }
+  virtual AwsError ReadParam(const ParameterPath & param_path, std::vector<std::string> & out) const = 0;
 
   /**
    * read a double value from the provided parameter name
@@ -199,10 +132,7 @@ public:
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
-  AwsError ReadDouble(const ParameterPath & param_path, double & out) const
-  {
-    return ReadDouble(FormatParameterPath(param_path).c_str(), out);
-  }
+  virtual AwsError ReadParam(const ParameterPath & param_path, double & out) const = 0;
 
   /**
    * read an integer value from the provided parameter name
@@ -211,10 +141,7 @@ public:
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
-  AwsError ReadInt(const ParameterPath & param_path, int & out) const
-  {
-    return ReadInt(FormatParameterPath(param_path).c_str(), out);
-  }
+  virtual AwsError ReadParam(const ParameterPath & param_path, int & out) const = 0;
 
   /**
    * read a boolean value from the provided parameter name
@@ -223,10 +150,7 @@ public:
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
-  AwsError ReadBool(const ParameterPath & param_path, bool & out) const
-  {
-    return ReadBool(FormatParameterPath(param_path).c_str(), out);
-  }
+  virtual AwsError ReadParam(const ParameterPath & param_path, bool & out) const = 0;
 
   /**
    * read a string value from the provided parameter name
@@ -235,10 +159,7 @@ public:
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
-  AwsError ReadString(const ParameterPath & param_path, Aws::String & out) const
-  {
-    return ReadString(FormatParameterPath(param_path).c_str(), out);
-  }
+  virtual AwsError ReadParam(const ParameterPath & param_path, Aws::String & out) const = 0;
 
   /**
    * read a string from the provided parameter name
@@ -247,10 +168,7 @@ public:
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
-  AwsError ReadStdString(const ParameterPath & param_path, std::string & out) const
-  {
-    return ReadStdString(FormatParameterPath(param_path).c_str(), out);
-  }
+  virtual AwsError ReadParam(const ParameterPath & param_path, std::string & out) const = 0;
 
   /**
    * read a map from the provided parameter name
@@ -259,19 +177,29 @@ public:
    * @return AWS_ERR_OK if read was successful, AWS_ERR_NOT_FOUND if the parameter was not found
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
-  AwsError ReadMap(const ParameterPath & param_path, std::map<std::string, std::string> & out) const
-  {
-    return ReadMap(FormatParameterPath(param_path).c_str(), out);
-  }
-
+  virtual AwsError ReadParam(const ParameterPath & param_path, std::map<std::string, std::string> & out) const = 0;
 
 private:
-  /**
-   * format the provided ParameterPath object into the a string containing the desired parameter name
-   * @param param_path an object representing the path of the parameter to be read
-   * @return the formatted string
-   */
-  virtual std::string FormatParameterPath(const ParameterPath & param_path) const = 0;
+  template<class InvalidType>
+  AwsError ReadParam(InvalidType arg, std::vector<std::string> & out) const = delete;
+  
+  template<class InvalidType>
+  AwsError ReadParam(InvalidType arg, double & out) const = delete;
+  
+  template<class InvalidType>
+  AwsError ReadParam(InvalidType arg, int & out) const = delete;
+  
+  template<class InvalidType>
+  AwsError ReadParam(InvalidType arg, bool & out) const = delete;
+  
+  template<class InvalidType>
+  AwsError ReadParam(InvalidType arg, Aws::String & out) const = delete;
+  
+  template<class InvalidType>
+  AwsError ReadParam(InvalidType arg, std::string & out) const = delete;
+  
+  template<class InvalidType>
+  AwsError ReadParam(InvalidType arg, std::map<std::string, std::string> & out) const = delete;
 };
 
 }  // namespace Client
