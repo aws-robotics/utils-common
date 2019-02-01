@@ -201,7 +201,7 @@ bool GetServiceAuthConfig(ServiceAuthConfig & config,
   long total_timeout_ms = DEFAULT_AUTH_TOTAL_TIMEOUT_MS;
 
   std::map<std::string, std::string> data;
-  if (parameters->ReadMap("iot", data) != AWS_ERR_OK) {
+  if (parameters->ReadParam(Aws::Client::ParameterPath("iot"), data) != AWS_ERR_OK) {
     failed = true;
   } else {
     if (!GetConfigValue(data, CFG_CAFILE, cafile)) failed = true;

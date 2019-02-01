@@ -23,16 +23,13 @@ namespace Client {
 class ParameterReaderMock : public ParameterReaderInterface 
 {
 public:
-  MOCK_CONST_METHOD2(ReadList, Aws::AwsError(const char *, std::vector<std::string> &));
-  MOCK_CONST_METHOD2(ReadDouble, Aws::AwsError(const char *, double &));
-  MOCK_CONST_METHOD2(ReadInt, Aws::AwsError(const char *, int &));
-  MOCK_CONST_METHOD2(ReadBool, Aws::AwsError(const char *, bool &));
-  MOCK_CONST_METHOD2(ReadString, Aws::AwsError(const char *, Aws::String &));
-  MOCK_CONST_METHOD2(ReadStdString, Aws::AwsError(const char *, std::string &));
-  MOCK_CONST_METHOD2(ReadMap, Aws::AwsError(const char *, std::map<std::string, std::string> &));
-
-private:
-  MOCK_CONST_METHOD1(FormatParameterPath, std::string(const ParameterPath &));
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, std::vector<std::string> &));
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, double &));
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, int &));
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, bool &));
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, Aws::String &));
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, std::string &));
+  MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, std::map<std::string, std::string> &));
 };
 
 }  // namespace Client

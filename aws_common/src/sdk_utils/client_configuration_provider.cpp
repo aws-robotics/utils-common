@@ -86,38 +86,38 @@ ClientConfiguration ClientConfigurationProvider::GetClientConfiguration(
    * defaults to us-east-1).
    */
   config.region = profile_provider.GetProfile().GetRegion();
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "region"), config.region);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "region"), config.region);
   PopulateUserAgent(config.userAgent, ros_version_override);
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "user_agent"), config.userAgent);
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "endpoint_override"), config.endpointOverride);
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_host"), config.proxyHost);
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_user_name"), config.proxyUserName);
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_password"), config.proxyPassword);
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "ca_path"), config.caPath);
-  reader_->ReadString(ParameterPath(CLIENT_CONFIG_PREFIX, "ca_file"), config.caFile);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "user_agent"), config.userAgent);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "endpoint_override"), config.endpointOverride);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_host"), config.proxyHost);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_user_name"), config.proxyUserName);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_password"), config.proxyPassword);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "ca_path"), config.caPath);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "ca_file"), config.caFile);
 
   int temp;
-  if (AWS_ERR_OK == reader_->ReadInt(ParameterPath(CLIENT_CONFIG_PREFIX, "request_timeout_ms"), temp)) {
+  if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "request_timeout_ms"), temp)) {
     config.requestTimeoutMs = temp;
   }
-  if (AWS_ERR_OK == reader_->ReadInt(ParameterPath(CLIENT_CONFIG_PREFIX, "connect_timeout_ms"), temp)) {
+  if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "connect_timeout_ms"), temp)) {
     config.connectTimeoutMs = temp;
   }
-  if (AWS_ERR_OK == reader_->ReadInt(ParameterPath(CLIENT_CONFIG_PREFIX, "max_connections"), temp)) {
+  if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "max_connections"), temp)) {
     config.maxConnections = temp;
   }
-  if (AWS_ERR_OK == reader_->ReadInt(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_port"), temp)) {
+  if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_port"), temp)) {
     config.proxyPort = temp;
   }
 
-  reader_->ReadBool(ParameterPath(CLIENT_CONFIG_PREFIX, "use_dual_stack"), config.useDualStack);
-  reader_->ReadBool(ParameterPath(CLIENT_CONFIG_PREFIX, "enable_clock_skew_adjustment"),
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "use_dual_stack"), config.useDualStack);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "enable_clock_skew_adjustment"),
                     config.enableClockSkewAdjustment);
-  reader_->ReadBool(ParameterPath(CLIENT_CONFIG_PREFIX, "follow_redirects"), config.followRedirects);
-  reader_->ReadBool(ParameterPath(CLIENT_CONFIG_PREFIX, "verify_SSL"), config.verifySSL);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "follow_redirects"), config.followRedirects);
+  reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "verify_SSL"), config.verifySSL);
 
   int max_retries;
-  if (AWS_ERR_OK == reader_->ReadInt(ParameterPath(CLIENT_CONFIG_PREFIX, "max_retries"), max_retries)) {
+  if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "max_retries"), max_retries)) {
     config.retryStrategy = std::make_shared<Aws::Client::DefaultRetryStrategy>(max_retries);
   }
 
