@@ -35,7 +35,8 @@ public:
    * @param node_namespaces
    * @param parameter_path_keys
    */
-  ParameterPath(const std::vector<std::string> & node_namespaces, const std::vector<std::string> & parameter_path_keys) :
+  explicit ParameterPath(const std::vector<std::string> & node_namespaces,
+                         const std::vector<std::string> & parameter_path_keys) :
     node_namespaces_(node_namespaces), parameter_path_keys_(parameter_path_keys) {}
 
   /**
@@ -45,7 +46,7 @@ public:
    * @param parameter_path_keys
    */
   template<typename ...Args>
-  ParameterPath(Args... parameter_path_keys) :
+  explicit ParameterPath(Args... parameter_path_keys) :
     parameter_path_keys_(std::vector<std::string> {(parameter_path_keys)...}) {}
 
   /**
@@ -178,28 +179,6 @@ public:
    * @note if the return code is not AWS_ERR_OK, out remains unchanged.
    */
   virtual AwsError ReadParam(const ParameterPath & param_path, std::map<std::string, std::string> & out) const = 0;
-
-private:
-  template<class InvalidType>
-  AwsError ReadParam(InvalidType arg, std::vector<std::string> & out) const = delete;
-  
-  template<class InvalidType>
-  AwsError ReadParam(InvalidType arg, double & out) const = delete;
-  
-  template<class InvalidType>
-  AwsError ReadParam(InvalidType arg, int & out) const = delete;
-  
-  template<class InvalidType>
-  AwsError ReadParam(InvalidType arg, bool & out) const = delete;
-  
-  template<class InvalidType>
-  AwsError ReadParam(InvalidType arg, Aws::String & out) const = delete;
-  
-  template<class InvalidType>
-  AwsError ReadParam(InvalidType arg, std::string & out) const = delete;
-  
-  template<class InvalidType>
-  AwsError ReadParam(InvalidType arg, std::map<std::string, std::string> & out) const = delete;
 };
 
 }  // namespace Client
