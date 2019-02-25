@@ -2,7 +2,7 @@
 Changelog for package aws_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
+2.0.0 (2019-02-25)
 ------------------
 * Add ROS2 dependencies to package.xml (`#21 <https://github.com/aws-robotics/utils-common/issues/21>`_)
   * Update package.xml to depend on ament_cmake_gtest and ament_cmake_gmock if building for ROS2.
