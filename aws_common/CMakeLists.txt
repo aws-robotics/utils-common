@@ -62,7 +62,16 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 ### Tests ###
 #############
 enable_testing()
+# Temporarily set CATKIN_INSTALL_INTO_PREFIX_ROOT to FALSE so we can call find_package(catkin) without modifying the install space.
+if(DEFINED CATKIN_INSTALL_INTO_PREFIX_ROOT)
+  set(CATKIN_INSTALL_INTO_PREFIX_ROOT_COPY ${CATKIN_INSTALL_INTO_PREFIX_ROOT})
+endif()
+set(CATKIN_INSTALL_INTO_PREFIX_ROOT FALSE)
 find_package(catkin QUIET)
+if(DEFINED CATKIN_INSTALL_INTO_PREFIX_ROOT_COPY)
+  set(CATKIN_INSTALL_INTO_PREFIX_ROOT ${CATKIN_INSTALL_INTO_PREFIX_ROOT_COPY})
+endif()
+
 find_package(ament_cmake_gtest QUIET)
 if(catkin_FOUND)
   if(NOT GMOCK_FOUND AND NOT TARGET gmock)
