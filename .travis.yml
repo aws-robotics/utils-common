@@ -12,6 +12,7 @@ notifications:
 env:
   global:
     - GITHUB_ACCOUNT=aws-robotics
+    - PACKAGE_NAME=aws_common
   matrix:
     # define DOWNSTREAM_GITHUB_REPO=name-of-your-repo if you'd like to trigger downstream repos' travis builds
     - ROS_DISTRO=kinetic ROS_VERSION=1
