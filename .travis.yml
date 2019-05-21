@@ -1,5 +1,5 @@
-sudo: required 
-language: generic 
+sudo: required
+language: generic
 compiler:
   - gcc
 notifications:
@@ -10,14 +10,17 @@ notifications:
       - ros-contributions@amazon.com
       - travis-build@platform-notifications.robomaker.aws.a2z.com
 env:
-  matrix:
-    - ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
-    - ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
-    - ROS_DISTRO="melodic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
-    - ROS_DISTRO="melodic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
   global:
-    - AFTER_SCRIPT='if [ -z "$PRERELEASE" ] || [ "$PRERELEASE" != true ]; then cd ~/catkin_ws && catkin build --pre-clean --catkin-make-args run_tests && catkin_test_results --verbose; fi;'
+    - GITHUB_ACCOUNT=aws-robotics
+    - PACKAGE_NAME=aws_common
+  matrix:
+    # define DOWNSTREAM_GITHUB_REPO=name-of-your-repo if you'd like to trigger downstream repos' travis builds
+    - ROS_DISTRO=kinetic ROS_VERSION=1
+    - ROS_DISTRO=lunar   ROS_VERSION=1
+    - ROS_DISTRO=melodic ROS_VERSION=1
+    - ROS_DISTRO=bouncy  ROS_VERSION=2
+    - ROS_DISTRO=crystal ROS_VERSION=2
 install:
-  - git clone https://github.com/ros-industrial/industrial_ci.git .ros_ci
+  - git clone https://github.com/aws-robotics/travis-scripts.git .ros_ci
 script:
-  - .ros_ci/travis.sh
+  - .ros_ci/ce_build.sh
