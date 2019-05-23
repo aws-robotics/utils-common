@@ -72,17 +72,18 @@ add_common_gtest(test_service_credentials_provider test/sdk_utils/auth/service_c
 add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
 target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
 
-set(LIBS_FOR_TESTS 
-     ${GTEST_LIBRARIES}
-     pthread
-     ${GMOCK_LIBRARY}
-     test_utils
-     ${aws_common_LIBRARIES}
-     ${PROJECT_NAME})
-     
+set(LIBS_FOR_TESTS
+  ${PROJECT_NAME}
+  test_utils
+  ${aws_common_LIBRARIES}
+  ${GMOCK_LIBRARY}
+  pthread
+)
+
 set(HEADERS_FOR_TESTS
-     ${aws_common_INCLUDE_DIRS}
-     ${AWSSDK_INCLUDE_DIR})
+  ${aws_common_INCLUDE_DIRS}
+  ${AWSSDK_INCLUDE_DIR}
+)
 
 macro(link_test_target target_name)
   if(TARGET ${target_name})
