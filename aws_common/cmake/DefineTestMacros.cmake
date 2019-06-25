@@ -13,7 +13,8 @@
 # limitations under the License.
 
 macro(find_catkin)
-  # Temporarily set CATKIN_INSTALL_INTO_PREFIX_ROOT to FALSE so we can call find_package(catkin) without modifying the install space.
+  # Temporarily set CATKIN_INSTALL_INTO_PREFIX_ROOT to FALSE so we can call find_package(catkin)
+  # without modifying the install space.
   if(DEFINED CATKIN_INSTALL_INTO_PREFIX_ROOT)
     set(CATKIN_INSTALL_INTO_PREFIX_ROOT_COPY ${CATKIN_INSTALL_INTO_PREFIX_ROOT})
   endif()
@@ -32,8 +33,10 @@ macro(find_common_test_packages)
     catkin_destinations()
   elseif(ament_cmake_gtest_FOUND)
     find_package(ament_cmake_gmock REQUIRED)
+  else()
+    message(WARNING "Could not find catkin or ament!")
   endif()
-  
+
   if(DEFINED GMOCK_LIBRARIES)
     set(GMOCK_LIBRARY ${GMOCK_LIBRARIES})
   else()
@@ -50,7 +53,6 @@ macro(add_common_gtest target)
     message(STATUS "Building tests using ament")
     ament_cmake_gmock("${target}" ${ARGN})
   else()
-    message(STATUS "Not building tests as neither catkin nor ament were found.")
+    message(WARNING "Not building tests as neither catkin nor ament were found.")
   endif()
 endmacro()
-
