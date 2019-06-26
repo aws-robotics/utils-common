@@ -12,14 +12,16 @@ notifications:
 env:
   global:
     - GITHUB_ACCOUNT=aws-robotics
-    - PACKAGE_NAME=aws_common
+    # uncomment PACKAGE_NAMES to build unit tests - REQUIRED if you'd like to run unit tests using colcon
+    - PACKAGE_NAMES=aws_common
   matrix:
     # define DOWNSTREAM_GITHUB_REPO=name-of-your-repo if you'd like to trigger downstream repos' travis builds
     - ROS_DISTRO=kinetic ROS_VERSION=1
-    - ROS_DISTRO=lunar   ROS_VERSION=1
     - ROS_DISTRO=melodic ROS_VERSION=1
-    - ROS_DISTRO=bouncy  ROS_VERSION=2
-    - ROS_DISTRO=crystal ROS_VERSION=2
+    - ROS_DISTRO=dashing ROS_VERSION=2
+matrix:
+  allow_failures:
+    - env: ROS_DISTRO=dashing ROS_VERSION=2
 install:
   - git clone https://github.com/aws-robotics/travis-scripts.git .ros_ci
 script:
