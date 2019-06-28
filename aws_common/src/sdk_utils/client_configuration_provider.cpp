@@ -26,6 +26,24 @@
 namespace Aws {
 namespace Client {
 
+/**
+ *
+ */
+class NoRetryStrategy : public DefaultRetryStrategy
+{
+public:
+    NoRetryStrategy() : DefaultRetryStrategy(0,0) {}
+    NoRetryStrategy(int i, int j) : DefaultRetryStrategy(0,0) {}
+
+    bool ShouldRetry(const AWSError<CoreErrors>& error, long attemptedRetries) const override
+    {
+      return false;
+    }
+    int GetAttemptedRetriesCount() { return 0; }
+    void ResetAttemptedRetriesCount() { }
+};
+
+
 bool operator==(const ClientConfiguration & left, const ClientConfiguration & right)
 {
   bool result = true;
@@ -116,8 +134,18 @@ ClientConfiguration ClientConfigurationProvider::GetClientConfiguration(
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "follow_redirects"), config.followRedirects);
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "verify_SSL"), config.verifySSL);
 
+  // check for non-default strategy
+  bool strategy = false;
+  auto error = reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "no_retry_strategy"), strategy);
+
+  if (AWS_ERR_OK == error && strategy) {
+    config.retryStrategy = std::make_shared<NoRetryStrategy>(0,0);
+  }
+
+  // if max retries is set use the DefaultRetryStrategy
   int max_retries;
   if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "max_retries"), max_retries)) {
+
     config.retryStrategy = std::make_shared<Aws::Client::DefaultRetryStrategy>(max_retries);
   }
 
