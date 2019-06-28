@@ -62,52 +62,28 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 ### Tests ###
 #############
 enable_testing()
-find_package(catkin QUIET)
-find_package(ament_cmake_gtest QUIET)
-if(catkin_FOUND)
-  if(NOT GMOCK_FOUND AND NOT TARGET gmock)
-    include_directories(/usr/include/gmock /usr/src/gmock)
-    add_library(gmock /usr/src/gmock/src/gmock-all.cc)
-  endif()
-  catkin_destinations()
-  if(CATKIN_ENABLE_TESTING)
-      message(STATUS "Building tests using catkin")
-      catkin_add_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
-      catkin_add_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
-      catkin_add_gtest(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
-      catkin_add_gtest(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
-  endif()
-elseif(ament_cmake_gtest_FOUND)
-  find_package(ament_cmake_gmock REQUIRED)
-  message(STATUS "Building tests using ament")
-  ament_add_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
-  ament_add_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
-  ament_add_gmock(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
-  ament_add_gmock(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
-else()
-  message(STATUS "Not building tests as neither catkin nor ament were found.")
-endif()
-
-if(DEFINED GMOCK_LIBRARIES)
-  set(GMOCK_LIBRARY ${GMOCK_LIBRARIES})
-else()
-  set(GMOCK_LIBRARY gmock)
-endif()
+include(${CMAKE_SOURCE_DIR}/cmake/DefineTestMacros.cmake)
+find_common_test_packages()
+add_common_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
+add_common_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
+add_common_gtest(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
+add_common_gtest(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
 
 add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
 target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
 
-set(LIBS_FOR_TESTS 
-     ${GTEST_LIBRARIES}
-     pthread
-     ${GMOCK_LIBRARY}
-     test_utils
-     ${aws_common_LIBRARIES}
-     ${PROJECT_NAME})
-     
+set(LIBS_FOR_TESTS
+  ${PROJECT_NAME}
+  test_utils
+  ${aws_common_LIBRARIES}
+  ${GMOCK_LIBRARY}
+  pthread
+)
+
 set(HEADERS_FOR_TESTS
-     ${aws_common_INCLUDE_DIRS}
-     ${AWSSDK_INCLUDE_DIR})
+  ${aws_common_INCLUDE_DIRS}
+  ${AWSSDK_INCLUDE_DIR}
+)
 
 macro(link_test_target target_name)
   if(TARGET ${target_name})
@@ -147,8 +123,8 @@ CONFIGURE_FILE(${PROJECT_NAME}Config.cmake.in
   ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake @ONLY)
 CONFIGURE_FILE(${PROJECT_NAME}ConfigVersion.cmake.in
   ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake @ONLY)
-
 INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/external/${CMAKE_INSTALL_LIBDIR}/cmake/AWSSDK/ DESTINATION share/${PROJECT_NAME}/cmake)
+INSTALL(FILES ${CMAKE_SOURCE_DIR}/cmake/DefineTestMacros.cmake DESTINATION share/${PROJECT_NAME}/cmake)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake DESTINATION share/${PROJECT_NAME}/cmake)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION share/${PROJECT_NAME}/cmake)
 INSTALL(EXPORT ${PROJECT_NAME}-targets DESTINATION share/${PROJECT_NAME}/cmake)
