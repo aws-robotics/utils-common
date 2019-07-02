@@ -140,14 +140,16 @@ ClientConfiguration ClientConfigurationProvider::GetClientConfiguration(
 
   if (AWS_ERR_OK == error && strategy) {
     config.retryStrategy = std::make_shared<NoRetryStrategy>(0,0);
+  } else {
+
+    // if max retries is set use the DefaultRetryStrategy
+    int max_retries;
+    if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "max_retries"), max_retries)) {
+
+      config.retryStrategy = std::make_shared<Aws::Client::DefaultRetryStrategy>(max_retries);
+    }
   }
 
-  // if max retries is set use the DefaultRetryStrategy
-  int max_retries;
-  if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "max_retries"), max_retries)) {
-
-    config.retryStrategy = std::make_shared<Aws::Client::DefaultRetryStrategy>(max_retries);
-  }
 
   return config;
 }
