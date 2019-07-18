@@ -16,14 +16,12 @@ The source code is released under an [Apache 2.0].
 - Melodic
 
 ### Build status
-
-* Travis CI: [![Build Status](https://travis-ci.org/aws-robotics/utils-common.svg?branch=master)](https://travis-ci.org/aws-robotics/utils-common)
- * ROS build farm:
-   * ROS Kinetic @ u16.04 Xenial [![Build Status](http://build.ros.org/job/Kbin_uX64__aws_common__ubuntu_xenial_amd64__binary/badge/icon)](http://build.ros.org/job/Kbin_uX64__aws_common__ubuntu_xenial_amd64__binary)
-   * ROS Melodic @ u18.04 Bionic [![Build Status](http://build.ros.org/job/Mbin_uB64__aws_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros.org/job/Mbin_uB64__aws_common__ubuntu_bionic_amd64__binary)
-
-[Amazon Web Services (AWS)]: https://aws.amazon.com/
-[Apache 2.0]: https://aws.amazon.com/apache-2-0/
+* Travis CI:
+    * "master" branch [![Build Status](https://travis-ci.org/aws-robotics/utils-common.svg?branch=master)](https://travis-ci.org/aws-robotics/utils-common/branches)
+    * "release" branch [![Build Status](https://travis-ci.org/aws-robotics/utils-common.svg?branch=release-v2)](https://travis-ci.org/aws-robotics/utils-common/branches)
+* ROS build farm:
+    * ROS Kinetic @ u16.04 Xenial [![Build Status](http://build.ros.org/job/Kbin_uX64__aws_common__ubuntu_xenial_amd64__binary/badge/icon)](http://build.ros.org/job/Kbin_uX64__aws_common__ubuntu_xenial_amd64__binary)
+    * ROS Melodic @ u18.04 Bionic [![Build Status](http://build.ros.org/job/Mbin_uB64__aws_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros.org/job/Mbin_uB64__aws_common__ubuntu_bionic_amd64__binary)
 
 
 ## Installation
@@ -64,3 +62,7 @@ _Note: If building the master branch instead of a release branch you may need to
 - Configure ROS library path
 
         source ~/ros-workspace/install/setup.bash
+
+
+[Amazon Web Services (AWS)]: https://aws.amazon.com/
+[Apache 2.0]: https://aws.amazon.com/apache-2-0/
