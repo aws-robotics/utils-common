@@ -29,18 +29,24 @@ namespace Client {
 /**
  *
  */
-class NoRetryStrategy : public DefaultRetryStrategy
+class NoRetryStrategy : public RetryStrategy
 {
 public:
-    NoRetryStrategy() : DefaultRetryStrategy(0,0) {}
-    NoRetryStrategy(int i, int j) : DefaultRetryStrategy(0,0) {}
+  NoRetryStrategy() = default;
 
-    bool ShouldRetry(const AWSError<CoreErrors>& error, long attemptedRetries) const override
-    {
-      return false;
-    }
-    int GetAttemptedRetriesCount() { return 0; }
-    void ResetAttemptedRetriesCount() { }
+  bool ShouldRetry(const AWSError<CoreErrors> & error, long attemptedRetries) const override
+  {
+    AWS_UNREFERENCED_PARAM(error);
+    AWS_UNREFERENCED_PARAM(attemptedRetries);
+    return false;
+  }
+
+  long CalculateDelayBeforeNextRetry(const AWSError<CoreErrors> & error, long attemptedRetries) const
+  {
+    AWS_UNREFERENCED_PARAM(error);
+    AWS_UNREFERENCED_PARAM(attemptedRetries);
+    return 0;
+  }
 };
 
 
@@ -139,17 +145,14 @@ ClientConfiguration ClientConfigurationProvider::GetClientConfiguration(
   auto error = reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "no_retry_strategy"), strategy);
 
   if (AWS_ERR_OK == error && strategy) {
-    config.retryStrategy = std::make_shared<NoRetryStrategy>(0,0);
+    config.retryStrategy = std::make_shared<NoRetryStrategy>();
   } else {
-
     // if max retries is set use the DefaultRetryStrategy
     int max_retries;
     if (AWS_ERR_OK == reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "max_retries"), max_retries)) {
-
       config.retryStrategy = std::make_shared<Aws::Client::DefaultRetryStrategy>(max_retries);
     }
   }
-
 
   return config;
 }
