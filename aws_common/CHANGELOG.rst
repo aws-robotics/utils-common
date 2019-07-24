@@ -2,6 +2,37 @@
 Changelog for package aws_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update DefineTestMacros.cmake
+* Add NoRetryStrategy (`#38 <https://github.com/aws-robotics/utils-common/issues/38>`_)
+  * ROS-2222: Add Configuration For Retry Strategy
+  cr https://code.amazon.com/reviews/CR-10006070
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+  * Don't allow max_retries to override strategy
+  cr https://code.amazon.com/reviews/CR-10283519
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+  * cleanup NoRetryStrategy
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+  * increment minor version
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+* Fix ament macro call in DefineTestMacros.cmake (`#35 <https://github.com/aws-robotics/utils-common/issues/35>`_)
+  * Fix ament macro call in DefineTestMacros.cmake
+  * Disallow Travis build failures for dashing
+* Add macro for ros1/2 finding gtest and gmock (`#30 <https://github.com/aws-robotics/utils-common/issues/30>`_)
+  * Add macro for ros1/2 finding gtest and gmock
+  The macro `find_common_test_packages` will use ament or catkin to link to gtest and gmock libraries.
+  **Note:** You must add dependencies on gtest and gmock in the package.xml still
+  * remove linkage against redundant library
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+  * update travis.yml to be compatible with specifying multiple package names
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+  * update travis.yml test matrix
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+  * make catkin a buildtool_depend
+  Signed-off-by: Miaofei <miaofei@amazon.com>
+* Contributors: AAlon, M. M, Ross Desmond
+
 2.0.0 (2019-02-25)
 ------------------
 * Add ROS2 dependencies to package.xml (`#21 <https://github.com/aws-robotics/utils-common/issues/21>`_)
