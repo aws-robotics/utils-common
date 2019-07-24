@@ -45,7 +45,7 @@ macro(find_common_test_packages)
 endmacro()
 
 macro(add_common_gtest target)
-  if(CATKIN_ENABLE_TESTING)
+  if(catkin_FOUND)
     message(STATUS "Building tests using catkin")
     set(GTEST_LIBRARIES "") # hack so that linking against libgmock doesn't also link against libgtest
     catkin_add_gmock("${target}" ${ARGN})
