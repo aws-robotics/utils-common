@@ -2,8 +2,8 @@
 Changelog for package aws_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.0 (2019-07-24)
+------------------
 * Update DefineTestMacros.cmake
 * Add NoRetryStrategy (`#38 <https://github.com/aws-robotics/utils-common/issues/38>`_)
   * ROS-2222: Add Configuration For Retry Strategy
