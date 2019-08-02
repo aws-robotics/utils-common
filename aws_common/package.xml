@@ -12,7 +12,9 @@
 
   <buildtool_depend>cmake</buildtool_depend>
   <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
-
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake_gtest</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake_gmock</buildtool_depend>
+  
   <build_depend>ros_environment</build_depend>
 
   <depend>zlib</depend>
