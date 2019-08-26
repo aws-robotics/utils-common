@@ -27,6 +27,8 @@ macro(find_catkin)
 endmacro()
 
 macro(find_common_test_packages)
+  # Loads the proper testing package (either catkin or ament) depending on what's available during
+  # the build
   find_catkin()
   find_package(ament_cmake_gtest QUIET)
   if(catkin_FOUND)
@@ -35,6 +37,12 @@ macro(find_common_test_packages)
     find_package(ament_cmake_gmock REQUIRED)
   else()
     message(WARNING "Could not find catkin or ament!")
+  endif()
+
+  if(CATKIN_ENABLE_TESTING OR BUILD_TESTING)
+    set(aws_common_TESTING_ENABLED 1)
+  else()
+    set(aws_common_TESTING_ENABLED 0)
   endif()
 
   if(DEFINED GMOCK_LIBRARIES)
