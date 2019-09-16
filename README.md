@@ -22,7 +22,7 @@ The source code is released under an [Apache 2.0].
 * ROS build farm:
     * ROS Kinetic @ u16.04 Xenial [![Build Status](http://build.ros.org/job/Kbin_uX64__aws_common__ubuntu_xenial_amd64__binary/badge/icon)](http://build.ros.org/job/Kbin_uX64__aws_common__ubuntu_xenial_amd64__binary)
     * ROS Melodic @ u18.04 Bionic [![Build Status](http://build.ros.org/job/Mbin_uB64__aws_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros.org/job/Mbin_uB64__aws_common__ubuntu_bionic_amd64__binary)
-
+    * ROS Dashing @ u18.04 Bionic [![Build Status](http://build.ros2.org/job/Dbin_uB64__aws_common__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros2.org/job/Dbin_uB64__aws_common__ubuntu_bionic_amd64__binary)
 
 ## Installation
 
