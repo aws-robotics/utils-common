@@ -14,6 +14,7 @@ The source code is released under an [Apache 2.0].
 ### Supported ROS Distributions
 - Kinetic
 - Melodic
+- Dashing
 
 ### Build status
 * Travis CI:
@@ -59,7 +60,7 @@ _Note: If building the master branch instead of a release branch you may need to
 
 - Configure ROS library path
 
-        source ~/ros-workspace/install/setup.bash
+        source ~/ros-workspace/install/local_setup.bash
 
 
 [Amazon Web Services (AWS)]: https://aws.amazon.com/
