@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(aws_common)
 
+include(${CMAKE_SOURCE_DIR}/cmake/DefineTestMacros.cmake)
+
 SET(AWS_COMMON_VERSION 1.0.0)
 
 add_compile_options(-std=c++11)
@@ -61,41 +63,42 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 #############
 ### Tests ###
 #############
-enable_testing()
-include(${CMAKE_SOURCE_DIR}/cmake/DefineTestMacros.cmake)
 find_common_test_packages()
-add_common_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
-add_common_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
-add_common_gtest(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
-add_common_gtest(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
+if (aws_common_TESTING_ENABLED)
+  enable_testing()
+  add_common_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.cpp)
+  add_common_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
+  add_common_gtest(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
+  add_common_gtest(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
 
-add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
-target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
+  add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
+  target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
 
-set(LIBS_FOR_TESTS
-  ${PROJECT_NAME}
-  test_utils
-  ${aws_common_LIBRARIES}
-  ${GMOCK_LIBRARY}
-  pthread
-)
+  set(LIBS_FOR_TESTS
+    ${PROJECT_NAME}
+    test_utils
+    ${aws_common_LIBRARIES}
+    ${GMOCK_LIBRARY}
+    pthread
+  )
 
-set(HEADERS_FOR_TESTS
-  ${aws_common_INCLUDE_DIRS}
-  ${AWSSDK_INCLUDE_DIR}
-)
+  set(HEADERS_FOR_TESTS
+    ${aws_common_INCLUDE_DIRS}
+    ${AWSSDK_INCLUDE_DIR}
+  )
 
-macro(link_test_target target_name)
-  if(TARGET ${target_name})
-    target_include_directories("${target_name}" PRIVATE ${HEADERS_FOR_TESTS})
-    target_link_libraries("${target_name}" ${LIBS_FOR_TESTS})
-  endif()
-endmacro()
+  macro(link_test_target target_name)
+    if(TARGET ${target_name})
+      target_include_directories("${target_name}" PRIVATE ${HEADERS_FOR_TESTS})
+      target_link_libraries("${target_name}" ${LIBS_FOR_TESTS})
+    endif()
+  endmacro()
 
-link_test_target(test_aws_log_system)
-link_test_target(test_throttling_manager)
-link_test_target(test_client_configuration_provider)
-link_test_target(test_service_credentials_provider)
+  link_test_target(test_aws_log_system)
+  link_test_target(test_throttling_manager)
+  link_test_target(test_client_configuration_provider)
+  link_test_target(test_service_credentials_provider)
+endif()
 
 #############
 ## Install ##
