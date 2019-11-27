@@ -61,6 +61,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 #############
 ### Tests ###
 #############
+if(BUILD_TESTING)
+
 enable_testing()
 include(${CMAKE_SOURCE_DIR}/cmake/DefineTestMacros.cmake)
 find_common_test_packages()
@@ -96,6 +98,8 @@ link_test_target(test_aws_log_system)
 link_test_target(test_throttling_manager)
 link_test_target(test_client_configuration_provider)
 link_test_target(test_service_credentials_provider)
+
+endif(BUILD_TESTING)
 
 #############
 ## Install ##
