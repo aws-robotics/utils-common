@@ -21,7 +21,8 @@ if(NOT EXTERNAL_INSTALL_LOCATION)
 endif()
 
 ## Add AWS SDK libraries
-set(SERVICE "core" "logs" "monitoring" "s3" "kinesis" "iot" "lex" "polly")
+# set(SERVICE "core" "logs" "monitoring" "s3" "kinesis" "iot" "lex" "polly")
+set(SERVICE "core" "kinesis")
 foreach(_service ${SERVICE})
   list(APPEND ${PROJECT_NAME}_IMPORTED_LIBRARIES "aws-cpp-sdk-${_service}")
 endforeach()
@@ -61,6 +62,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 #############
 ### Tests ###
 #############
+if(BUILD_TESTING)
+
 enable_testing()
 include(${CMAKE_SOURCE_DIR}/cmake/DefineTestMacros.cmake)
 find_common_test_packages()
@@ -97,6 +100,7 @@ link_test_target(test_throttling_manager)
 link_test_target(test_client_configuration_provider)
 link_test_target(test_service_credentials_provider)
 
+endif(BUILD_TESTING)
 #############
 ## Install ##
 #############
