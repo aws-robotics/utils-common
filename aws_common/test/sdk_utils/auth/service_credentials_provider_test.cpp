@@ -29,7 +29,6 @@ using ::testing::Matcher;
 using ::testing::DoAll;
 using ::testing::SetArgReferee;
 using ::testing::Return;
-using ::testing::NiceMock;
 using Aws::AwsError;
 
 namespace Aws {
@@ -44,8 +43,8 @@ bool operator==(const AWSCredentials & left, const AWSCredentials & right)
   );
 }
 
-} // namespace Aws
-} // namespace Auth
+}  // namespace Auth
+}  // namespace Aws
 
 class ServiceCredentialsProviderFixture : public ::testing::Test
 {
@@ -73,12 +72,12 @@ const std::list<std::string> ServiceCredentialsProviderFixture::kFullIotConfigMa
 };
 
 const IotRoleConfig ServiceCredentialsProviderFixture::kFullIotConfig = IotRoleConfig{
-  kFullIotConfigMap.at("cafile").c_str(),
-  kFullIotConfigMap.at("certfile").c_str(),
-  kFullIotConfigMap.at("keyfile").c_str(),
-  kFullIotConfigMap.at("endpoint").c_str(),
-  kFullIotConfigMap.at("role").c_str(), 
-  kFullIotConfigMap.at("thing_name").c_str(),
+  kFullIotConfigMap.at("cafile"),
+  kFullIotConfigMap.at("certfile"),
+  kFullIotConfigMap.at("keyfile"),
+  kFullIotConfigMap.at("endpoint"),
+  kFullIotConfigMap.at("role"), 
+  kFullIotConfigMap.at("thing_name"),
   StringUtils::ConvertToInt32(kFullIotConfigMap.at("connect_timeout_ms").c_str()),
   StringUtils::ConvertToInt32(kFullIotConfigMap.at("total_timeout_ms").c_str())
 };
@@ -174,7 +173,7 @@ TEST_F(ServiceCredentialsProviderFixture, TestServiceCredentialsProviderChainInv
 class OpenIotRoleCredentialsProvider : public IotRoleCredentialsProvider
 {
 public:
-  OpenIotRoleCredentialsProvider(const IotRoleConfig & config): IotRoleCredentialsProvider(config) {};
+  explicit OpenIotRoleCredentialsProvider(const IotRoleConfig & config): IotRoleCredentialsProvider(config) {};
 
   void PublicRefresh() { IotRoleCredentialsProvider::Refresh();  }
   void PublicSetCredentials(AWSCredentials & creds) { IotRoleCredentialsProvider::SetCredentials(creds);  }

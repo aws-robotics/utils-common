@@ -19,6 +19,8 @@
 #include <aws_common/sdk_utils/client_configuration_provider.h>
 #include <aws_common/sdk_utils/parameter_reader.h>
 
+#include <utility>
+
 #ifndef CLIENT_CONFIG_PREFIX
 #define CLIENT_CONFIG_PREFIX "aws_client_configuration"
 #endif
@@ -41,7 +43,7 @@ public:
     return false;
   }
 
-  long CalculateDelayBeforeNextRetry(const AWSError<CoreErrors> & error, long attemptedRetries) const
+  long CalculateDelayBeforeNextRetry(const AWSError<CoreErrors> & error, long attemptedRetries) const override
   {
     AWS_UNREFERENCED_PARAM(error);
     AWS_UNREFERENCED_PARAM(attemptedRetries);
@@ -54,14 +56,14 @@ bool operator==(const ClientConfiguration & left, const ClientConfiguration & ri
 {
   bool result = true;
 
-  result &= (0 == left.region.compare(right.region));
-  result &= (0 == left.userAgent.compare(right.userAgent));
-  result &= (0 == left.endpointOverride.compare(right.endpointOverride));
-  result &= (0 == left.proxyHost.compare(right.proxyHost));
-  result &= (0 == left.proxyUserName.compare(right.proxyUserName));
-  result &= (0 == left.proxyPassword.compare(right.proxyPassword));
-  result &= (0 == left.caPath.compare(right.caPath));
-  result &= (0 == left.caFile.compare(right.caFile));
+  result &= (right.region == left.region);
+  result &= (right.userAgent == left.userAgent);
+  result &= (right.endpointOverride == left.endpointOverride);
+  result &= (right.proxyHost == left.proxyHost);
+  result &= (right.proxyUserName == left.proxyUserName);
+  result &= (right.proxyPassword == left.proxyPassword);
+  result &= (right.caPath == left.caPath);
+  result &= (right.caFile == left.caFile);
 
   result &= (left.requestTimeoutMs == right.requestTimeoutMs);
   result &= (left.connectTimeoutMs == right.connectTimeoutMs);
@@ -83,11 +85,11 @@ bool operator!=(const ClientConfiguration & left, const ClientConfiguration & ri
 ClientConfigurationProvider::ClientConfigurationProvider(
   std::shared_ptr<ParameterReaderInterface> reader)
 {
-  this->reader_ = reader;
+  this->reader_ = std::move(reader);
 }
 
 void ClientConfigurationProvider::PopulateUserAgent(Aws::String & user_agent,
-                                                    std::string ros_version_override)
+                                                    const std::string& ros_version_override)
 {
   Aws::String ros_user_agent_suffix = " exec-env/AWS_RoboMaker ros-" CMAKE_ROS_DISTRO "/";
   if (ros_version_override.empty()) {
@@ -111,7 +113,7 @@ ClientConfiguration ClientConfigurationProvider::GetClientConfiguration(
    */
   config.region = profile_provider.GetProfile().GetRegion();
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "region"), config.region);
-  PopulateUserAgent(config.userAgent, ros_version_override);
+  PopulateUserAgent(config.userAgent, std::move(ros_version_override));
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "user_agent"), config.userAgent);
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "endpoint_override"), config.endpointOverride);
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_host"), config.proxyHost);

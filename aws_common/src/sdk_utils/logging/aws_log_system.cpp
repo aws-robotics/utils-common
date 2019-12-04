@@ -27,7 +27,7 @@ AWSLogSystem::AWSLogSystem(Aws::Utils::Logging::LogLevel log_level)
 {
 }
 
-Aws::Utils::Logging::LogLevel AWSLogSystem::GetLogLevel(void) const
+Aws::Utils::Logging::LogLevel AWSLogSystem::GetLogLevel() const
 {
   return configured_log_level_;
 }

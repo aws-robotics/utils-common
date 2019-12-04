@@ -31,21 +31,21 @@ class AWSLogSystem : public Aws::Utils::Logging::LogSystemInterface
 {
 public:
   explicit AWSLogSystem(Aws::Utils::Logging::LogLevel log_level);
-  virtual ~AWSLogSystem() = default;
+  ~AWSLogSystem() override = default;
 
   // Gets the currently configured log level.
-  virtual Aws::Utils::Logging::LogLevel GetLogLevel(void) const;
+  Aws::Utils::Logging::LogLevel GetLogLevel() const override;
 
   // Set a new log level. This has the immediate effect of changing the log.
   void SetLogLevel(Aws::Utils::Logging::LogLevel log_level);
 
   // Log using printf style output. Prefer using LogStream
-  virtual void Log(Aws::Utils::Logging::LogLevel log_level, const char * tag, const char * format,
-                   ...);
+  void Log(Aws::Utils::Logging::LogLevel log_level, const char * tag, const char * format,
+                   ...) override;
 
   // Logs from a streambuffer.
-  virtual void LogStream(Aws::Utils::Logging::LogLevel log_level, const char * tag,
-                         const Aws::OStringStream & messageStream);
+  void LogStream(Aws::Utils::Logging::LogLevel log_level, const char * tag,
+                         const Aws::OStringStream & message_stream) override;
 
 protected:
   virtual void LogInfo(const char * tag, const std::string & message) = 0;

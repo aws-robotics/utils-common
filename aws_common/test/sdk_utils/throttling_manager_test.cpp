@@ -37,7 +37,7 @@ public:
 class ThrottledClient : public BaseClient, Aws::Client::ThrottlingManager
 {
 public:
-  ThrottledClient(double max_api_tps) : Aws::Client::ThrottlingManager()
+  explicit ThrottledClient(double max_api_tps) : 
   {
     this->Aws::Client::ThrottlingManager::SetMaxApiTps("ThrottledFunction", max_api_tps);
   }
@@ -111,18 +111,19 @@ void MakeCalls(ThrottledClient * throttled_client, std::chrono::milliseconds dur
 TEST(ThrottlingManagerTest, multiThreadedClientThrottling)
 {
   const int milliseconds_to_run = 3500, sleep_duration_in_us = 150, max_tps = 125;
-  int threads_to_spawn = std::max((unsigned int)2, std::thread::hardware_concurrency());
+  int threads_to_spawn = std::max(static_cast<unsigned int>(2), std::thread::hardware_concurrency());
   ThrottledClient throttled_client(max_tps);
   std::vector<std::thread> threads;
-  for (int tid = 0; tid < threads_to_spawn; tid++) {
-    threads.push_back(std::thread(MakeCalls, &throttled_client,
+  threads.reserve(threads_to_spawn);
+for (int tid = 0; tid < threads_to_spawn; tid++) {
+    threads.emplace_back(MakeCalls, &throttled_client,
                                   std::chrono::milliseconds(milliseconds_to_run),
-                                  std::chrono::microseconds(sleep_duration_in_us)));
+                                  std::chrono::microseconds(sleep_duration_in_us));
   }
   for (auto & t : threads) {
     t.join();
   }
-  int expected_non_throttled_call_count = std::ceil(max_tps * milliseconds_to_run / (float) 1000);
+  int expected_non_throttled_call_count = std::ceil(max_tps * milliseconds_to_run / static_cast<float>(1000));
   ASSERT_LE(throttled_client.BaseClient::throttled_function_call_count_,
             expected_non_throttled_call_count);
 }

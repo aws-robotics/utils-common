@@ -37,8 +37,8 @@ protected:
 TEST_F(ClientConfigurationProviderFixture, TestReaderRespected)
 {
   const char* expected_str = "N2IxYjk2ZDhkYTNmZWQ2ZjkwMDlhNWRl";
-  const int kExpectedInt = 64654;
-  const bool kExpectedBool = true;
+  const int expected_int = 64654;
+  const bool expected_bool = true;
 
   EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<std::vector<std::string> &>(_)))
    .WillRepeatedly(Return(AwsError::AWS_ERR_OK));
@@ -49,36 +49,36 @@ TEST_F(ClientConfigurationProviderFixture, TestReaderRespected)
   EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<Aws::String &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(expected_str), Return(AwsError::AWS_ERR_OK)));
   EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<int &>(_)))
-    .WillRepeatedly(DoAll(SetArgReferee<1>(kExpectedInt), Return(AwsError::AWS_ERR_OK)));
+    .WillRepeatedly(DoAll(SetArgReferee<1>(expected_int), Return(AwsError::AWS_ERR_OK)));
   EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<bool &>(_)))
-    .WillRepeatedly(DoAll(SetArgReferee<1>(kExpectedBool), Return(AwsError::AWS_ERR_OK)));
+    .WillRepeatedly(DoAll(SetArgReferee<1>(expected_bool), Return(AwsError::AWS_ERR_OK)));
 
   ClientConfiguration config = test_subject_->GetClientConfiguration();
 
   EXPECT_EQ(expected_str, config.region);
-  EXPECT_EQ(kExpectedInt, config.maxConnections);
-  EXPECT_EQ(kExpectedBool, config.useDualStack);
+  EXPECT_EQ(expected_int, config.maxConnections);
+  EXPECT_EQ(expected_bool, config.useDualStack);
 }
 
 TEST_F(ClientConfigurationProviderFixture, TestAllReaderErrorsIgnored) 
 {
   ClientConfiguration default_config;
   const char* unexpected_str = (default_config.region + Aws::String("YjJiOWZmZDQ3Yjg1MTU0MmE3MjFmOTk2")).c_str();
-  const int unkExpectedInt = default_config.maxConnections + 45231;
-  const bool unkExpectedBool = !default_config.useDualStack;
+  const int unexpected_int = default_config.maxConnections + 45231;
+  const bool unexpected_bool = !default_config.useDualStack;
 
   EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<Aws::String &>(_)))
     .WillRepeatedly(DoAll(SetArgReferee<1>(unexpected_str), Return(AwsError::AWS_ERR_FAILURE)));
   EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<int &>(_)))
-    .WillRepeatedly(DoAll(SetArgReferee<1>(unkExpectedInt), Return(AwsError::AWS_ERR_NOT_FOUND)));
+    .WillRepeatedly(DoAll(SetArgReferee<1>(unexpected_int), Return(AwsError::AWS_ERR_NOT_FOUND)));
   EXPECT_CALL(*param_reader_, ReadParam(_, Matcher<bool &>(_)))
-    .WillRepeatedly(DoAll(SetArgReferee<1>(unkExpectedBool), Return(AwsError::AWS_ERR_EMPTY)));
+    .WillRepeatedly(DoAll(SetArgReferee<1>(unexpected_bool), Return(AwsError::AWS_ERR_EMPTY)));
 
   ClientConfiguration config = test_subject_->GetClientConfiguration();
 
   EXPECT_EQ(unexpected_str, config.region);
-  EXPECT_NE(unkExpectedInt, config.maxConnections);
-  EXPECT_EQ(unkExpectedBool, config.useDualStack);
+  EXPECT_NE(unexpected_int, config.maxConnections);
+  EXPECT_EQ(unexpected_bool, config.useDualStack);
   EXPECT_EQ(default_config.maxConnections, config.maxConnections);
   EXPECT_NE(default_config.useDualStack, config.useDualStack);
 }
@@ -112,7 +112,7 @@ TEST_P(ClientConfigurationOperatorsFixture, TestClientConfigurationEqNeqOperator
   EXPECT_NE(config1, config2);
 }
 
-client_conf_mutator client_conf_mutators[] = 
+client_conf_mutator g_client_conf_mutators[] = 
 {
   [](ClientConfiguration & config)->void { config.region = "OTg5ZWRiMWVhYjEyZDRkMWFhOTRlZGU0"; },
   [](ClientConfiguration & config)->void { config.userAgent = "YmVkYjJjYTA0NTg0ZGJjZDdjOWY2OWYz"; },
@@ -134,7 +134,7 @@ client_conf_mutator client_conf_mutators[] =
 INSTANTIATE_TEST_CASE_P(
   TestClientConfigurationOperators, 
   ClientConfigurationOperatorsFixture,  
-  ::testing::ValuesIn(client_conf_mutators)
+  ::testing::ValuesIn(g_client_conf_mutators)
 );
 
 int main(int argc, char ** argv)

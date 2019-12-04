@@ -22,20 +22,26 @@ namespace Client {
 std::string ParameterPath::get_resolved_path(char node_namespace_separator,
                                              char parameter_namespace_separator) const
 {
-  std::string resolved_path = get_node_path(node_namespace_separator);
+  return GetResolvedPath(node_namespace_separator, parameter_namespace_separator);
+}
+
+std::string ParameterPath::GetResolvedPath(char node_namespace_separator,
+                                           char parameter_namespace_separator) const
+{
+  std::string resolved_path = GetNodePath(node_namespace_separator);
   if (!resolved_path.empty()) {
     resolved_path += node_namespace_separator;
   }
-  resolved_path += get_local_path(parameter_namespace_separator);
+  resolved_path += GetLocalPath(parameter_namespace_separator);
   return resolved_path;
 }
 
-std::string ParameterPath::get_node_path(char node_namespace_separator) const
+std::string ParameterPath::GetNodePath(char node_namespace_separator) const
 {
   std::string resolved_path;
   /* Construct the node's path by the provided lists of keys */
-  for (auto key = node_namespaces_.begin(); key != node_namespaces_.end(); key++) {
-    resolved_path += *key + node_namespace_separator;
+  for (const auto & node_namespace : node_namespaces_) {
+    resolved_path += node_namespace + node_namespace_separator;
   }
   if (!resolved_path.empty() && resolved_path.back() == node_namespace_separator) {
     resolved_path.pop_back();
@@ -43,12 +49,12 @@ std::string ParameterPath::get_node_path(char node_namespace_separator) const
   return resolved_path;
 }
 
-std::string ParameterPath::get_local_path(char parameter_namespace_separator) const
+std::string ParameterPath::GetLocalPath(char parameter_namespace_separator) const
 {
   std::string resolved_path;
   /* Construct the parameter's path by the provided lists of keys */
-  for (auto key = parameter_path_keys_.begin(); key != parameter_path_keys_.end(); key++) {
-    resolved_path += *key + parameter_namespace_separator;
+  for (const auto & parameter_path_key : parameter_path_keys_) {
+    resolved_path += parameter_path_key + parameter_namespace_separator;
   }
   if (!resolved_path.empty() && resolved_path.back() == parameter_namespace_separator) {
     resolved_path.pop_back();

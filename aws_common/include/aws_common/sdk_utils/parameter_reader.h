@@ -19,6 +19,8 @@
 #include <aws/core/utils/StringUtils.h>
 #include <aws_common/sdk_utils/aws_error.h>
 
+#include <utility>
+
 
 namespace Aws {
 namespace Client {
@@ -38,6 +40,10 @@ public:
   explicit ParameterPath(const std::vector<std::string> & node_namespaces,
                          const std::vector<std::string> & parameter_path_keys) :
     node_namespaces_(node_namespaces), parameter_path_keys_(parameter_path_keys) {}
+
+  explicit ParameterPath(std::vector<std::string> && node_namespaces,
+                         std::vector<std::string> && parameter_path_keys) :
+    node_namespaces_(std::move(node_namespaces)), parameter_path_keys_(std::move(parameter_path_keys)) {}
 
   /**
    * @example The local parameter "timeout" in parameter namespace "config" should be specified as follows:
@@ -84,7 +90,10 @@ public:
    * @return string representing the full, resolved path of the parameter.
    * @note If node_namespaces and parameter_path_keys are empty, an empty string would be returned.
    */
-  std::string get_resolved_path(char node_namespace_separator,
+  std::string GetResolvedPath(char node_namespace_separator,
+                              char parameter_namespace_separator) const;
+
+  std::string get_resolved_path(char node_namespace_separator,              // NOLINT
                                 char parameter_namespace_separator) const;
 
 private:
@@ -93,14 +102,14 @@ private:
    * @param node_namespace_separator
    * @return string The parameter's whereabouts in the node namespace hierarchy.
    */
-  std::string get_node_path(char node_namespace_separator) const;
+  std::string GetNodePath(char node_namespace_separator) const;
 
   /**
    * @note Only applies if parameter_path_keys was specified during construction; otherwise, an empty string is returned.
    * @param parameter_namespace_separator
    * @return string The parameter path including parameter namespaces but excluding node's namespaces.
    */
-  std::string get_local_path(char parameter_namespace_separator) const;
+  std::string GetLocalPath(char parameter_namespace_separator) const;
 
   /**
    * Member variables to store the parameter's path in the namespace hierarchy.

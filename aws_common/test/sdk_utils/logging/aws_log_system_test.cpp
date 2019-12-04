@@ -36,7 +36,7 @@ private:
 public:
   explicit ClassUnderTest(Aws::Utils::Logging::LogLevel log_level) : AWSLogSystem(log_level) {}
 
-  ~ClassUnderTest() = default;
+  ~ClassUnderTest() override = default;
 
   /*********************************
    * Overidden log methods to test *
@@ -154,7 +154,7 @@ TEST(TestAWSLogSystem, TestLogMethod)
 {
   // Create a logger object with "Debug" configured level.
   // This means, log at all the levels above "Debug" will be emitted.
-  ClassUnderTest * logger = new ClassUnderTest(Aws::Utils::Logging::LogLevel::Debug);
+  auto * logger = new ClassUnderTest(Aws::Utils::Logging::LogLevel::Debug);
 
   // Test if info log function is correctly getting called with correct log message.
   logger->Log(Aws::Utils::Logging::LogLevel::Info, "info_tag", "[%d] fake info log message", 1);
@@ -279,7 +279,7 @@ TEST(TestAWSLogSystem, TestLogStreamMethod)
 
   // Create a logger object with "Debug" configured level.
   // This means, log at all the levels above "Debug" will be emitted.
-  ClassUnderTest * logger = new ClassUnderTest(Aws::Utils::Logging::LogLevel::Debug);
+  auto * logger = new ClassUnderTest(Aws::Utils::Logging::LogLevel::Debug);
 
   // Test if info log function is correctly getting called with correct log message.
   message_stream << "This is a first info log message.";
@@ -335,7 +335,7 @@ TEST(TestAWSLogSystem, TestChangingLogLevels)
 {
   // Create a logger object with "Debug" configured level.
   // This means, log at all the levels above "Debug" will be emitted.
-  ClassUnderTest * logger = new ClassUnderTest(Aws::Utils::Logging::LogLevel::Debug);
+  auto * logger = new ClassUnderTest(Aws::Utils::Logging::LogLevel::Debug);
 
   // check if log level is correctly set.
   EXPECT_EQ(logger->GetLogLevel(), Aws::Utils::Logging::LogLevel::Debug);

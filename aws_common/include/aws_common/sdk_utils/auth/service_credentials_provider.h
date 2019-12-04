@@ -29,19 +29,19 @@ namespace Auth {
 
 /// \brief Default number of milliseconds to wait before timing out when connecting to retrieve
 /// credentials from IoT
-static const long DEFAULT_AUTH_CONNECT_TIMEOUT_MS = 5000;
+static const long kDefaultAuthConnectTimeoutMs = 5000;
 /// \brief Default number of milliseconds to wait before timing out when retrieving credentials from
 /// IoT
-static const long DEFAULT_AUTH_TOTAL_TIMEOUT_MS = 10000;
+static const long kDefaultAuthTotalTimeoutMs = 10000;
 
-static const char CFG_CAFILE[] = "cafile";
-static const char CFG_CERTFILE[] = "certfile";
-static const char CFG_KEYFILE[] = "keyfile";
-static const char CFG_ENDPOINT[] = "endpoint";
-static const char CFG_ROLE[] = "role";
-static const char CFG_THING_NAME[] = "thing_name";
-static const char CFG_CONNECT_TIMEOUT_MS[] = "connect_timeout_ms";
-static const char CFG_TOTAL_TIMEOUT_MS[] = "total_timeout_ms";
+static const char kCfgCaFile[] = "cafile";
+static const char kCfgCertFile[] = "certfile";
+static const char kCfgKeyFile[] = "keyfile";
+static const char kCfgEndpoint[] = "endpoint";
+static const char kCfgRole[] = "role";
+static const char kCfgThingName[] = "thing_name";
+static const char kCfgConnectTimeoutMs[] = "connect_timeout_ms";
+static const char kCfgTotalTimeoutMs[] = "total_timeout_ms";
 
 /**
  * \brief Auth configuration needed to retrieve AWS credentials via the IoT service
@@ -54,7 +54,7 @@ static const char CFG_TOTAL_TIMEOUT_MS[] = "total_timeout_ms";
  * struct, which is used by the IotRoleCredentialsProvider to retrieve the actual
  * credentials.
  */
-typedef struct struct_IotRoleConfig
+struct IotRoleConfig
 {
   /// Path to the Root CA for the endpoint
   Aws::String cafile;
@@ -69,10 +69,10 @@ typedef struct struct_IotRoleConfig
   /// Thing name for the device
   Aws::String name;
   /// Number of ms to wait before timing out when connecting to the endpoint
-  long connect_timeout_ms;
+  long connect_timeout_ms{};
   /// Total number of ms to wait for the entire connect/request/response transaction
-  long total_timeout_ms;
-} IotRoleConfig;
+  long total_timeout_ms{};
+};
 
 /**
  * \brief Auth configuration for ROS AWS service integration
@@ -81,11 +81,11 @@ typedef struct struct_IotRoleConfig
  * loaded that can sign requests. There are various methods to obtain credentials
  * and this struct contains all configuration needed, regardless of the method used.
  */
-typedef struct tagServiceAuthConfig
+struct ServiceAuthConfig
 {
   /// IoT-specific configuration
   IotRoleConfig iot;
-} ServiceAuthConfig;
+};
 
 /**
  * \brief Retrieves service authorization data from a ParameterReaderInterface and
@@ -96,7 +96,7 @@ typedef struct tagServiceAuthConfig
  * false
  */
 bool GetServiceAuthConfig(ServiceAuthConfig & config,
-                          const std::shared_ptr<Aws::Client::ParameterReaderInterface> parameters);
+                          const std::shared_ptr<Aws::Client::ParameterReaderInterface>& parameters);
 
 /**
  * \brief AWSCredentialsProvider that obtains credentials using the AWS IoT Core service
@@ -113,11 +113,11 @@ public:
   /**
    * @param config Configuration for connecting to the AWS IoT endpoint
    */
-  IotRoleCredentialsProvider(const IotRoleConfig & config);
+  explicit IotRoleCredentialsProvider(const IotRoleConfig & config);
 
-  virtual ~IotRoleCredentialsProvider();
+  ~IotRoleCredentialsProvider() override;
 
-  virtual AWSCredentials GetAWSCredentials() override;
+  AWSCredentials GetAWSCredentials() override;
 
 protected:
   // Visible for testing
@@ -125,7 +125,7 @@ protected:
   /// \brief Refreshes the cached AWS credentials
   void Refresh();
   /// \brief Sets the cached credentials
-  void SetCredentials(AWSCredentials & creds);
+  void SetCredentials(AWSCredentials & creds_obj);
   /// \brief Validates the json response from the AWS IoT service
   bool ValidateResponse(Aws::Utils::Json::JsonValue & value);
   /// \brief Returns true if the credentials have expired
@@ -139,7 +139,7 @@ private:
   /// Mutex to ensure only a single request is outstanding at any given time
   std::mutex creds_mutex_;
   /// Future epoch when the cached credentials will expire
-  std::atomic<double> expiry_;
+  std::atomic<double> expiry_{};
 };
 
 /**
@@ -157,8 +157,8 @@ public:
   /**
    * @param config Configuration for available credential providers
    */
-  ServiceCredentialsProviderChain(const ServiceAuthConfig & config);
-  ~ServiceCredentialsProviderChain() = default;
+  explicit ServiceCredentialsProviderChain(const ServiceAuthConfig & config);
+  ~ServiceCredentialsProviderChain() override = default;
 };
 
 } /* namespace Auth */
