@@ -37,10 +37,11 @@ public:
 class ThrottledClient : public BaseClient, Aws::Client::ThrottlingManager
 {
 public:
-  explicit ThrottledClient(double max_api_tps) : 
+  explicit ThrottledClient(double max_api_tps)
   {
-    this->Aws::Client::ThrottlingManager::SetMaxApiTps("ThrottledFunction", max_api_tps);
+    Aws::Client::ThrottlingManager::SetMaxApiTps("ThrottledFunction", max_api_tps);
   }
+
   DummyOutcome ThrottledFunction() const
   {
     throttled_function_call_count_++;
@@ -50,6 +51,7 @@ public:
     return MakeCall<DummyOutcome, int, DummyClientErrors>(
       base_func, 0, __func__, DummyClientErrors::THROTTLING_ERROR, true);
   }
+
   mutable std::atomic<int> throttled_function_call_count_{0};
 };
 
@@ -111,7 +113,7 @@ void MakeCalls(ThrottledClient * throttled_client, std::chrono::milliseconds dur
 TEST(ThrottlingManagerTest, multiThreadedClientThrottling)
 {
   const int milliseconds_to_run = 3500, sleep_duration_in_us = 150, max_tps = 125;
-  int threads_to_spawn = std::max(static_cast<unsigned int>(2), std::thread::hardware_concurrency());
+  int threads_to_spawn = std::max(2u, std::thread::hardware_concurrency());
   ThrottledClient throttled_client(max_tps);
   std::vector<std::thread> threads;
   threads.reserve(threads_to_spawn);

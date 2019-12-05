@@ -56,6 +56,25 @@ static const char kCfgTotalTimeoutMs[] = "total_timeout_ms";
  */
 struct IotRoleConfig
 {
+  IotRoleConfig() = default;
+
+  IotRoleConfig(const char * _cafile,
+                const char * _certfile,
+                const char * _keyfile,
+                const char * _host,
+                const char * _role,
+                const char * _name,
+                const int _connect_timeout_ms,
+                const int _total_timeout_ms)
+    : cafile(_cafile),
+      certfile(_certfile),
+      keyfile(_keyfile),
+      host(_host),
+      role(_role),
+      name(_name),
+      connect_timeout_ms(_connect_timeout_ms),
+      total_timeout_ms(_total_timeout_ms) {}
+
   /// Path to the Root CA for the endpoint
   Aws::String cafile;
   /// Path to the certificate which identifies the device

@@ -51,9 +51,7 @@ class ServiceCredentialsProviderFixture : public ::testing::Test
 public:
   static const std::map<std::string, std::string> kFullIotConfigMap;
   static const std::list<std::string> kFullIotConfigMandatoryKeys;
-  static const IotRoleConfig kFullIotConfig; 
-  static const std::map<std::string, std::string> kFullCredentialsInfo;
-  static const std::list<std::string> kFullCredentialsInfoKeys;
+  static const IotRoleConfig kFullIotConfig;
 
 protected:
   std::shared_ptr<ParameterReaderMock> param_reader_ =
@@ -71,27 +69,16 @@ const std::list<std::string> ServiceCredentialsProviderFixture::kFullIotConfigMa
   "cafile", "certfile", "keyfile", "endpoint", "role", "thing_name"
 };
 
-const IotRoleConfig ServiceCredentialsProviderFixture::kFullIotConfig = IotRoleConfig{
-  kFullIotConfigMap.at("cafile"),
-  kFullIotConfigMap.at("certfile"),
-  kFullIotConfigMap.at("keyfile"),
-  kFullIotConfigMap.at("endpoint"),
-  kFullIotConfigMap.at("role"), 
-  kFullIotConfigMap.at("thing_name"),
+const IotRoleConfig ServiceCredentialsProviderFixture::kFullIotConfig = IotRoleConfig(
+  kFullIotConfigMap.at("cafile").c_str(),
+  kFullIotConfigMap.at("certfile").c_str(),
+  kFullIotConfigMap.at("keyfile").c_str(),
+  kFullIotConfigMap.at("endpoint").c_str(),
+  kFullIotConfigMap.at("role").c_str(),
+  kFullIotConfigMap.at("thing_name").c_str(),
   StringUtils::ConvertToInt32(kFullIotConfigMap.at("connect_timeout_ms").c_str()),
   StringUtils::ConvertToInt32(kFullIotConfigMap.at("total_timeout_ms").c_str())
-};
-
-const std::map<std::string, std::string> ServiceCredentialsProviderFixture::kFullCredentialsInfo = {
-  {"expiration", "2019-01-10T21:57:06Z"},
-  {"accessKeyId", "ZWM2ODYzNDEwZWJhNGM0NjZiYzk4ZDI4"},
-  {"secretAccessKey", "YWYyNWM0NmEzZWE1NWQy"},
-  {"sessionToken", "YTFhM2NhNjM5OGZlMDlmYmRmMTY3Mzk5WQyNDVkMTJjYThi"}
-};
-
-const std::list<std::string> ServiceCredentialsProviderFixture::kFullCredentialsInfoKeys = {
-  "expiration", "accessKeyId", "secretAccessKey", "sessionToken"
-};
+);
 
 TEST_F(ServiceCredentialsProviderFixture, TestGetServiceAuthConfigNoIotConfig)
 {
