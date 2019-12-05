@@ -29,10 +29,10 @@ namespace Auth {
 
 /// \brief Default number of milliseconds to wait before timing out when connecting to retrieve
 /// credentials from IoT
-static const long kDefaultAuthConnectTimeoutMs = 5000;
+static const int kDefaultAuthConnectTimeoutMs = 5000;
 /// \brief Default number of milliseconds to wait before timing out when retrieving credentials from
 /// IoT
-static const long kDefaultAuthTotalTimeoutMs = 10000;
+static const int kDefaultAuthTotalTimeoutMs = 10000;
 
 static const char kCfgCaFile[] = "cafile";
 static const char kCfgCertFile[] = "certfile";
@@ -69,9 +69,9 @@ struct IotRoleConfig
   /// Thing name for the device
   Aws::String name;
   /// Number of ms to wait before timing out when connecting to the endpoint
-  long connect_timeout_ms{};
+  int connect_timeout_ms{};
   /// Total number of ms to wait for the entire connect/request/response transaction
-  long total_timeout_ms{};
+  int total_timeout_ms{};
 };
 
 /**
@@ -114,6 +114,8 @@ public:
    * @param config Configuration for connecting to the AWS IoT endpoint
    */
   explicit IotRoleCredentialsProvider(const IotRoleConfig & config);
+  IotRoleCredentialsProvider(const IotRoleCredentialsProvider & other) = delete;
+  IotRoleCredentialsProvider & operator=(const IotRoleCredentialsProvider & other) = delete;
 
   ~IotRoleCredentialsProvider() override;
 

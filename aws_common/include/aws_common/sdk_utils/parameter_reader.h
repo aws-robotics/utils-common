@@ -37,8 +37,8 @@ public:
    * @param node_namespaces
    * @param parameter_path_keys
    */
-  explicit ParameterPath(const std::vector<std::string> & node_namespaces,
-                         const std::vector<std::string> & parameter_path_keys) :
+  explicit ParameterPath(const std::vector<std::string> & node_namespaces,        // NOLINT(modernize-pass-by-value)
+                         const std::vector<std::string> & parameter_path_keys) :  // NOLINT(modernize-pass-by-value)
     node_namespaces_(node_namespaces), parameter_path_keys_(parameter_path_keys) {}
 
   explicit ParameterPath(std::vector<std::string> && node_namespaces,
@@ -93,7 +93,8 @@ public:
   std::string GetResolvedPath(char node_namespace_separator,
                               char parameter_namespace_separator) const;
 
-  std::string get_resolved_path(char node_namespace_separator,              // NOLINT
+  // NOLINTNEXTLINE(readability-identifier-naming)
+  std::string get_resolved_path(char node_namespace_separator,
                                 char parameter_namespace_separator) const;
 
 private:

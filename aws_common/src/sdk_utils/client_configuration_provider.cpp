@@ -36,6 +36,7 @@ class NoRetryStrategy : public RetryStrategy
 public:
   NoRetryStrategy() = default;
 
+  // NOLINTNEXTLINE(google-runtime-int)
   bool ShouldRetry(const AWSError<CoreErrors> & error, long attemptedRetries) const override
   {
     AWS_UNREFERENCED_PARAM(error);
@@ -43,6 +44,7 @@ public:
     return false;
   }
 
+  // NOLINTNEXTLINE(google-runtime-int)
   long CalculateDelayBeforeNextRetry(const AWSError<CoreErrors> & error, long attemptedRetries) const override
   {
     AWS_UNREFERENCED_PARAM(error);
@@ -89,19 +91,19 @@ ClientConfigurationProvider::ClientConfigurationProvider(
 }
 
 void ClientConfigurationProvider::PopulateUserAgent(Aws::String & user_agent,
-                                                    const std::string& ros_version_override)
+                                                    const std::string & ros_version_override)
 {
   Aws::String ros_user_agent_suffix = " exec-env/AWS_RoboMaker ros-" CMAKE_ROS_DISTRO "/";
   if (ros_version_override.empty()) {
     ros_user_agent_suffix += CMAKE_ROS_VERSION;
   } else {
-    ros_user_agent_suffix += ros_version_override.c_str();
+    ros_user_agent_suffix += ros_version_override.c_str();  // NOLINT(readability-redundant-string-cstr)
   }
   user_agent += ros_user_agent_suffix;
 }
 
 ClientConfiguration ClientConfigurationProvider::GetClientConfiguration(
-  std::string ros_version_override)
+  const std::string & ros_version_override)
 {
   ClientConfiguration config;
   Aws::Config::AWSProfileProvider profile_provider;
@@ -113,7 +115,7 @@ ClientConfiguration ClientConfigurationProvider::GetClientConfiguration(
    */
   config.region = profile_provider.GetProfile().GetRegion();
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "region"), config.region);
-  PopulateUserAgent(config.userAgent, std::move(ros_version_override));
+  PopulateUserAgent(config.userAgent, ros_version_override);
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "user_agent"), config.userAgent);
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "endpoint_override"), config.endpointOverride);
   reader_->ReadParam(ParameterPath(CLIENT_CONFIG_PREFIX, "proxy_host"), config.proxyHost);

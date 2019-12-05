@@ -19,6 +19,7 @@
 namespace Aws {
 namespace Client {
 
+// NOLINTNEXTLINE(readability-identifier-naming)
 std::string ParameterPath::get_resolved_path(char node_namespace_separator,
                                              char parameter_namespace_separator) const
 {

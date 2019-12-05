@@ -31,6 +31,8 @@ class AWSLogSystem : public Aws::Utils::Logging::LogSystemInterface
 {
 public:
   explicit AWSLogSystem(Aws::Utils::Logging::LogLevel log_level);
+  AWSLogSystem(AWSLogSystem const &) = delete;              // Do not allow copy constructor
+  AWSLogSystem & operator=(AWSLogSystem const &) = delete;  // Do not allow assignment operator
   ~AWSLogSystem() override = default;
 
   // Gets the currently configured log level.
@@ -60,9 +62,6 @@ private:
 
   void LogMessage(Aws::Utils::Logging::LogLevel log_level, const char * tag,
                   const std::string & message);
-
-  AWSLogSystem(AWSLogSystem const &) = delete;              // Do not allow copy constructor
-  AWSLogSystem & operator=(AWSLogSystem const &) = delete;  // Do not allow assignment operator
 };
 
 }  // namespace Logging
