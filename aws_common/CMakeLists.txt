@@ -34,7 +34,8 @@ add_library(${PROJECT_NAME} SHARED
   src/sdk_utils/aws_profile_provider.cpp
   src/sdk_utils/client_configuration_provider.cpp
   src/sdk_utils/logging/aws_log_system.cpp
-  src/sdk_utils/auth/service_credentials_provider.cpp)
+  src/sdk_utils/auth/service_credentials_provider.cpp
+  src/fs_utils/wordexp_ros.cpp)
 add_dependencies(${PROJECT_NAME} AWS_SDK_IMPORT)
 
 foreach(_imported_lib ${${PROJECT_NAME}_IMPORTED_LIBRARIES})
@@ -68,6 +69,7 @@ add_common_gtest(test_aws_log_system test/sdk_utils/logging/aws_log_system_test.
 add_common_gtest(test_throttling_manager test/sdk_utils/throttling_manager_test.cpp)
 add_common_gtest(test_client_configuration_provider test/sdk_utils/client_configuration_provider_test.cpp)
 add_common_gtest(test_service_credentials_provider test/sdk_utils/auth/service_credentials_provider_test.cpp)
+add_common_gtest(test_wordexp_ros test/fs_utils/wordexp_ros_test.cpp)
 
 add_library(test_utils test/sdk_utils/parameter_reader_mock.cpp)
 target_include_directories(test_utils PUBLIC ${PROJECT_SOURCE_DIR}/test/include)
@@ -96,6 +98,7 @@ link_test_target(test_aws_log_system)
 link_test_target(test_throttling_manager)
 link_test_target(test_client_configuration_provider)
 link_test_target(test_service_credentials_provider)
+link_test_target(test_wordexp_ros)
 
 #############
 ## Install ##
