@@ -34,6 +34,7 @@ public:
    *  @param reader A ParameterReaderInterface implementation that the provider will use to read the
    * configuration
    */
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   ClientConfigurationProvider(std::shared_ptr<ParameterReaderInterface> reader);
   ~ClientConfigurationProvider() = default;
 
@@ -42,7 +43,7 @@ public:
    * @param ros_version_override @refitem PopulateUserAgent
    * @return ClientConfiguration object
    */
-  ClientConfiguration GetClientConfiguration(std::string ros_version_override = "");
+  ClientConfiguration GetClientConfiguration(const std::string & ros_version_override = "");
 
 private:
   std::shared_ptr<ParameterReaderInterface> reader_;
@@ -55,7 +56,7 @@ private:
    * ROS_VERSION_MINOR, ROS_VERSION_PATCH from their common.h. These would be more accurate and
    * specific than relying on CMAKE_ROS_VERSION, but need to be passed in from upstream.
    */
-  void PopulateUserAgent(Aws::String & user_agent, std::string ros_version_override = "");
+  void PopulateUserAgent(Aws::String & user_agent, const std::string & ros_version_override = "");
 };
 
 }  // namespace Client

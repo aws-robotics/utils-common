@@ -15,11 +15,11 @@
 
 #include <aws_common/fs_utils/wordexp_ros.h>
 #include <wordexp.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 int wordexp_ros(const char *words, wordexp_t *pwordexp, int flags) {
   bool should_unset_home = false;
-  if (NULL == getenv("HOME") && NULL != getenv("ROS_HOME")) {
+  if (nullptr == getenv("HOME") && nullptr != getenv("ROS_HOME")) {
     // We don't want to change the behavior of anything else so we should unset HOME once we're done.
     should_unset_home = true;
     setenv("HOME", getenv("ROS_HOME"), true);

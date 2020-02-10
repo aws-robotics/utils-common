@@ -112,7 +112,7 @@ TEST_P(ClientConfigurationOperatorsFixture, TestClientConfigurationEqNeqOperator
   EXPECT_NE(config1, config2);
 }
 
-client_conf_mutator client_conf_mutators[] = 
+client_conf_mutator g_client_conf_mutators[] = 
 {
   [](ClientConfiguration & config)->void { config.region = "OTg5ZWRiMWVhYjEyZDRkMWFhOTRlZGU0"; },
   [](ClientConfiguration & config)->void { config.userAgent = "YmVkYjJjYTA0NTg0ZGJjZDdjOWY2OWYz"; },
@@ -134,7 +134,7 @@ client_conf_mutator client_conf_mutators[] =
 INSTANTIATE_TEST_CASE_P(
   TestClientConfigurationOperators, 
   ClientConfigurationOperatorsFixture,  
-  ::testing::ValuesIn(client_conf_mutators)
+  ::testing::ValuesIn(g_client_conf_mutators)
 );
 
 int main(int argc, char ** argv)

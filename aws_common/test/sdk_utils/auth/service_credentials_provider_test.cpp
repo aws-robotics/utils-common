@@ -29,7 +29,6 @@ using ::testing::Matcher;
 using ::testing::DoAll;
 using ::testing::SetArgReferee;
 using ::testing::Return;
-using ::testing::NiceMock;
 using Aws::AwsError;
 
 namespace Aws {
@@ -44,8 +43,8 @@ bool operator==(const AWSCredentials & left, const AWSCredentials & right)
   );
 }
 
-} // namespace Aws
-} // namespace Auth
+}  // namespace Auth
+}  // namespace Aws
 
 class ServiceCredentialsProviderFixture : public ::testing::Test
 {
@@ -72,16 +71,16 @@ const std::list<std::string> ServiceCredentialsProviderFixture::kFullIotConfigMa
   "cafile", "certfile", "keyfile", "endpoint", "role", "thing_name"
 };
 
-const IotRoleConfig ServiceCredentialsProviderFixture::kFullIotConfig = IotRoleConfig{
+const IotRoleConfig ServiceCredentialsProviderFixture::kFullIotConfig = IotRoleConfig(
   kFullIotConfigMap.at("cafile").c_str(),
   kFullIotConfigMap.at("certfile").c_str(),
   kFullIotConfigMap.at("keyfile").c_str(),
   kFullIotConfigMap.at("endpoint").c_str(),
-  kFullIotConfigMap.at("role").c_str(), 
+  kFullIotConfigMap.at("role").c_str(),
   kFullIotConfigMap.at("thing_name").c_str(),
   StringUtils::ConvertToInt32(kFullIotConfigMap.at("connect_timeout_ms").c_str()),
   StringUtils::ConvertToInt32(kFullIotConfigMap.at("total_timeout_ms").c_str())
-};
+);
 
 const std::map<std::string, std::string> ServiceCredentialsProviderFixture::kFullCredentialsInfo = {
   {"expiration", "2019-01-10T21:57:06Z"},
