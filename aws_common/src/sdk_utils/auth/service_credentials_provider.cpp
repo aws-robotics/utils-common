@@ -314,10 +314,9 @@ private:
 // IotRoleCredentialsProvider Class
 //
 
-IotRoleCredentialsProvider::IotRoleCredentialsProvider(const IotRoleConfig & config)
+IotRoleCredentialsProvider::IotRoleCredentialsProvider(const IotRoleConfig & config) : expiry_(0.0)
 {
   cached_ = AWSCredentials("", "");
-  expiry_.store(0.0);
   config_ = config;
 
   if (config_.connect_timeout_ms <= 0) { config_.connect_timeout_ms = DEFAULT_AUTH_CONNECT_TIMEOUT_MS; }

@@ -88,9 +88,9 @@ struct IotRoleConfig
   /// Thing name for the device
   Aws::String name;
   /// Number of ms to wait before timing out when connecting to the endpoint
-  long connect_timeout_ms;
+  long connect_timeout_ms = 0;
   /// Total number of ms to wait for the entire connect/request/response transaction
-  long total_timeout_ms;
+  long total_timeout_ms = 0;
 };
 
 /**
