@@ -34,6 +34,7 @@ public:
    *  @param reader A ParameterReaderInterface implementation that the provider will use to read the
    * configuration
    */
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   ClientConfigurationProvider(std::shared_ptr<ParameterReaderInterface> reader);
   ~ClientConfigurationProvider() = default;
 

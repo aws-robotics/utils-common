@@ -29,10 +29,10 @@ namespace Auth {
 
 /// \brief Default number of milliseconds to wait before timing out when connecting to retrieve
 /// credentials from IoT
-static const long DEFAULT_AUTH_CONNECT_TIMEOUT_MS = 5000;
+static const long DEFAULT_AUTH_CONNECT_TIMEOUT_MS = 5000; // NOLINT(google-runtime-int)
 /// \brief Default number of milliseconds to wait before timing out when retrieving credentials from
 /// IoT
-static const long DEFAULT_AUTH_TOTAL_TIMEOUT_MS = 10000;
+static const long DEFAULT_AUTH_TOTAL_TIMEOUT_MS = 10000;  // NOLINT(google-runtime-int)
 
 static const char CFG_CAFILE[] = "cafile";
 static const char CFG_CERTFILE[] = "certfile";
@@ -88,9 +88,9 @@ struct IotRoleConfig
   /// Thing name for the device
   Aws::String name;
   /// Number of ms to wait before timing out when connecting to the endpoint
-  long connect_timeout_ms = 0;
+  long connect_timeout_ms = 0;  // NOLINT(google-runtime-int)
   /// Total number of ms to wait for the entire connect/request/response transaction
-  long total_timeout_ms = 0;
+  long total_timeout_ms = 0;    // NOLINT(google-runtime-int)
 };
 
 /**
@@ -132,6 +132,7 @@ public:
   /**
    * @param config Configuration for connecting to the AWS IoT endpoint
    */
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   IotRoleCredentialsProvider(const IotRoleConfig & config);
   IotRoleCredentialsProvider(const IotRoleCredentialsProvider & other) = delete;
   IotRoleCredentialsProvider & operator=(const IotRoleCredentialsProvider & other) = delete;
@@ -178,6 +179,7 @@ public:
   /**
    * @param config Configuration for available credential providers
    */
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   ServiceCredentialsProviderChain(const ServiceAuthConfig & config);
   ~ServiceCredentialsProviderChain() override = default;
 };
