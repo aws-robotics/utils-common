@@ -65,7 +65,7 @@ static bool SetCurlOpt(CURL * curl, CURLoption opt, T lvalue);
 static bool AppendHeader(struct curl_slist ** headers, const char * name, const char * value);
 static bool IsIotConfigValid(const IotRoleConfig & config);
 static bool ParseConfigVale(std::string & value, Aws::String & result);
-static bool ParseConfigValue(std::string & value, int & result);
+static bool ParseConfigValue(std::string & value, int32_t & result);
 template <typename T>
 static bool GetConfigValue(std::map<std::string, std::string> & data, const char * name, T & result,
                            bool optional = false);
@@ -148,9 +148,9 @@ static bool ParseConfigValue(std::string & value, Aws::String & result)
  * @param result The variable to place the value into
  * @return True if the value was successfully parsed
  */
-static bool ParseConfigValue(std::string & value, int & result)
+static bool ParseConfigValue(std::string & value, int32_t & result)
 {
-  int tmp = Aws::Utils::StringUtils::ConvertToInt32(value.c_str());
+  int32_t tmp = Aws::Utils::StringUtils::ConvertToInt32(value.c_str());
   if (tmp > 0) {
     result = tmp;
     return true;
@@ -314,11 +314,9 @@ private:
 // IotRoleCredentialsProvider Class
 //
 
-IotRoleCredentialsProvider::IotRoleCredentialsProvider(const IotRoleConfig & config) : expiry_(0.0)
+IotRoleCredentialsProvider::IotRoleCredentialsProvider(const IotRoleConfig & config)
+  : cached_("", ""), config_(config), expiry_(0.0)
 {
-  cached_ = AWSCredentials("", "");
-  config_ = config;
-
   if (config_.connect_timeout_ms <= 0) { config_.connect_timeout_ms = DEFAULT_AUTH_CONNECT_TIMEOUT_MS; }
   if (config_.total_timeout_ms <= 0) { config_.total_timeout_ms = DEFAULT_AUTH_TOTAL_TIMEOUT_MS; }
 }
