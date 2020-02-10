@@ -54,8 +54,27 @@ static const char CFG_TOTAL_TIMEOUT_MS[] = "total_timeout_ms";
  * struct, which is used by the IotRoleCredentialsProvider to retrieve the actual
  * credentials.
  */
-typedef struct struct_IotRoleConfig
+struct IotRoleConfig
 {
+  IotRoleConfig() = default;
+
+  IotRoleConfig(const char * _cafile,
+                const char * _certfile,
+                const char * _keyfile,
+                const char * _host,
+                const char * _role,
+                const char * _name,
+                const int _connect_timeout_ms,
+                const int _total_timeout_ms)
+    : cafile(_cafile),
+      certfile(_certfile),
+      keyfile(_keyfile),
+      host(_host),
+      role(_role),
+      name(_name),
+      connect_timeout_ms(_connect_timeout_ms),
+      total_timeout_ms(_total_timeout_ms) {}
+
   /// Path to the Root CA for the endpoint
   Aws::String cafile;
   /// Path to the certificate which identifies the device
@@ -72,7 +91,7 @@ typedef struct struct_IotRoleConfig
   long connect_timeout_ms;
   /// Total number of ms to wait for the entire connect/request/response transaction
   long total_timeout_ms;
-} IotRoleConfig;
+};
 
 /**
  * \brief Auth configuration for ROS AWS service integration
@@ -81,11 +100,11 @@ typedef struct struct_IotRoleConfig
  * loaded that can sign requests. There are various methods to obtain credentials
  * and this struct contains all configuration needed, regardless of the method used.
  */
-typedef struct tagServiceAuthConfig
+struct ServiceAuthConfig
 {
   /// IoT-specific configuration
   IotRoleConfig iot;
-} ServiceAuthConfig;
+};
 
 /**
  * \brief Retrieves service authorization data from a ParameterReaderInterface and
@@ -96,7 +115,7 @@ typedef struct tagServiceAuthConfig
  * false
  */
 bool GetServiceAuthConfig(ServiceAuthConfig & config,
-                          const std::shared_ptr<Aws::Client::ParameterReaderInterface> parameters);
+                          const std::shared_ptr<Aws::Client::ParameterReaderInterface> & parameters);
 
 /**
  * \brief AWSCredentialsProvider that obtains credentials using the AWS IoT Core service
@@ -114,10 +133,12 @@ public:
    * @param config Configuration for connecting to the AWS IoT endpoint
    */
   IotRoleCredentialsProvider(const IotRoleConfig & config);
+  IotRoleCredentialsProvider(const IotRoleCredentialsProvider & other) = delete;
+  IotRoleCredentialsProvider & operator=(const IotRoleCredentialsProvider & other) = delete;
 
-  virtual ~IotRoleCredentialsProvider();
+  ~IotRoleCredentialsProvider() override;
 
-  virtual AWSCredentials GetAWSCredentials() override;
+  AWSCredentials GetAWSCredentials() override;
 
 protected:
   // Visible for testing
@@ -125,7 +146,7 @@ protected:
   /// \brief Refreshes the cached AWS credentials
   void Refresh();
   /// \brief Sets the cached credentials
-  void SetCredentials(AWSCredentials & creds);
+  void SetCredentials(AWSCredentials & creds_obj);
   /// \brief Validates the json response from the AWS IoT service
   bool ValidateResponse(Aws::Utils::Json::JsonValue & value);
   /// \brief Returns true if the credentials have expired
@@ -158,7 +179,7 @@ public:
    * @param config Configuration for available credential providers
    */
   ServiceCredentialsProviderChain(const ServiceAuthConfig & config);
-  ~ServiceCredentialsProviderChain() = default;
+  ~ServiceCredentialsProviderChain() override = default;
 };
 
 } /* namespace Auth */

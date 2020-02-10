@@ -20,14 +20,18 @@
 #include <iostream>
 #include <mutex>
 
-using namespace Aws::Utils::Logging;
+
+namespace Aws {
+namespace Utils {
+namespace Logging {
+
 
 AWSLogSystem::AWSLogSystem(Aws::Utils::Logging::LogLevel log_level)
 : configured_log_level_(log_level)
 {
 }
 
-Aws::Utils::Logging::LogLevel AWSLogSystem::GetLogLevel(void) const
+Aws::Utils::Logging::LogLevel AWSLogSystem::GetLogLevel() const
 {
   return configured_log_level_;
 }
@@ -37,6 +41,7 @@ void AWSLogSystem::SetLogLevel(Aws::Utils::Logging::LogLevel log_level)
   configured_log_level_.store(log_level);
 }
 
+// NOLINTNEXTLINE(cert-dcl50-cpp)
 void AWSLogSystem::Log(Aws::Utils::Logging::LogLevel log_level, const char * tag,
                        const char * format, ...)
 {
@@ -98,3 +103,7 @@ void AWSLogSystem::LogMessage(Aws::Utils::Logging::LogLevel log_level, const cha
       break;
   }
 }
+
+}  // namespace Logging
+}  // namespace Utils
+}  // namespace Aws

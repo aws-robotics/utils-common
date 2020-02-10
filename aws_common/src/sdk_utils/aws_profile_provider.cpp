@@ -18,9 +18,9 @@
 /**
  * Constants copied from <auth/AWSCredentialsProvider.cpp>
  */
-static const char * kProfileLogTag = "ProfileConfigFileAWSCredentialsProvider";
-static const char * kAwsProfileEnvironmentVariable = "AWS_DEFAULT_PROFILE";
-static const char * kDefaultProfile = "default";
+static const char * const kProfileLogTag = "ProfileConfigFileAWSCredentialsProvider";
+static const char * const kAwsProfileEnvironmentVariable = "AWS_DEFAULT_PROFILE";
+static const char * const kDefaultProfile = "default";
 
 namespace Aws {
 namespace Config {

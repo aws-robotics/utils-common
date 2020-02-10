@@ -79,7 +79,7 @@ protected:
    * @param api name of the API function
    * @param tps max number of calls per second
    */
-  void SetMaxApiTps(std::string api, double tps) { max_api_tps_[api] = tps; }
+  void SetMaxApiTps(const std::string & api, double tps) { max_api_tps_[api] = tps; }
 
 private:
   std::unordered_map<std::string, double> max_api_tps_;

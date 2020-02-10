@@ -19,6 +19,8 @@
 #include <aws/core/utils/StringUtils.h>
 #include <aws_common/sdk_utils/aws_error.h>
 
+#include <utility>
+
 
 namespace Aws {
 namespace Client {
