@@ -2,8 +2,8 @@
 Changelog for package aws_common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.2.0 (2020-03-27)
+------------------
 * Update package.xml
   https://github.com/aws-robotics/utils-common/pull/52 adds a new feature for expanding file paths
 * Fix linting issues found by clang-tidy 6.0 (`#53 <https://github.com/aws-robotics/utils-common/issues/53>`_)
