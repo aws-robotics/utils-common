@@ -42,6 +42,8 @@ jobs:
     - uses: ros-tooling/setup-ros@0.0.25
       with:
         required-ros-distributions: kinetic
+    - run: pip install -U wheel
+    - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         package-name: aws_common
