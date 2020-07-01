@@ -29,7 +29,6 @@ jobs:
         name: colcon-logs-${{ matrix.os }}
         path: ros_ws/log
 
-jobs:
   build_and_test_ubuntu_kinetic:
     runs-on:  ${{ matrix.os }}
     strategy:
