@@ -43,6 +43,7 @@ jobs:
       with:
         required-ros-distributions: kinetic
     - run: pip install -U wheel
+    - run: python setup.py bdist_wheel
     - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
