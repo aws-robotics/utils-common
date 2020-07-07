@@ -1,0 +1,42 @@
+name: Test utils_common
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - release-latest
+  schedule:
+    # Run every hour. This helps detect flakiness,
+    # and broken external dependencies.
+    - cron:  '0 * * * *'
+
+jobs:
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ros_distro: [kinetic, melodic, dashing]
+        include:
+        - ros_distro: kinetic
+          ubuntu_distro: xenial
+        - ros_distro: melodic
+          ubuntu_distro: bionic
+        - ros_distro: dashing
+          ubuntu_distro: bionic
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
+    outputs:
+      build_result: ${{ steps.build.outcome }}
+      test_result: ${{ steps.test.outcome }}
+    steps:
+    # TODO(setup-ros-docker#7): calling chown is necessary for now
+    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    - uses: ros-tooling/action-ros-ci@0.0.17
+      with:
+        vcs-repo-file-url: ''
+        package-name: aws_common
+    - uses: actions/upload-artifact@v1
+      with:
+        name: colcon-logs-${{ matrix.os }}
+        path: ros_ws/log
