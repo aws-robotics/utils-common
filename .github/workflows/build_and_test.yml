@@ -38,5 +38,5 @@ jobs:
         package-name: aws_common
     - uses: actions/upload-artifact@v1
       with:
-        name: colcon-logs-${{ matrix.os }}
+        name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
         path: ros_ws/log
