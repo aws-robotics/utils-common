@@ -30,6 +30,7 @@ jobs:
     steps:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    - run: export ROS_DISTRO=${{ matrix.ros_distro }}
     - if: ${{ matrix.ros_distro == 'dashing' }}
       run: export ROS_VERSION=2
     - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
