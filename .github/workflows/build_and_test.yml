@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - master
-      - release-latest
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
     - cron:  '0 * * * *'
+    branches:
+      - master
+      - release-latest
 
 jobs:
   build_and_test:
