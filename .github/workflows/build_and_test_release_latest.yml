@@ -27,10 +27,6 @@ jobs:
       build_result: ${{ steps.build.outcome }}
       test_result: ${{ steps.test.outcome }}
     steps:
-      # done for cloudwatch reporting
-    - uses: actions/checkout@v2
-      with:
-        ref: release-latest
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - uses: ros-tooling/action-ros-ci@0.0.17
@@ -64,6 +60,12 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     - uses: ros-tooling/action-cloudwatch-metrics@0.0.4
       with:
+        metric-dimensions: >-
+          [
+            { "Name": "github.event_name", "Value": "${{ github.event_name }}" },
+            { "Name": "github.ref", "Value": "release-latest" },
+            { "Name": "github.repository", "Value": "${{ github.repository }}" }
+          ]
         # Checks if any of the jobs have failed.
         #
         # needs.*.result is returns the list of all success statuses as an
