@@ -1,5 +1,7 @@
 name: Test utils_common
 on:
+  # to test
+  pull_request:
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
@@ -25,6 +27,7 @@ jobs:
       build_result: ${{ steps.build.outcome }}
       test_result: ${{ steps.test.outcome }}
     steps:
+      # done for cloudwatch reporting
     - uses: actions/checkout@v2
       with:
         ref: release-latest
@@ -32,8 +35,9 @@ jobs:
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
-        vcs-repo-file-url: ''
+        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
         package-name: aws_common
+        source-ros-binary-installation: ${{ matrix.ros_distro }}
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
