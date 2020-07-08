@@ -12,7 +12,7 @@ jobs:
     name: Build and Test Release Latest
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: false  # for debug
       matrix:
         ros_distro: [kinetic, melodic, dashing]
         include:
@@ -30,6 +30,10 @@ jobs:
     steps:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    - if: ${{ matrix.ros_distro == 'dashing' }}
+      run: export ROS_VERSION=2
+    - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
+      run: export ROS_VERSION=1
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
