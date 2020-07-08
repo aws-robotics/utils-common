@@ -1,4 +1,4 @@
-name: Test utils_common
+name: Build & Test utils_common master
 on:
   pull_request:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build_and_test:
-    name: Build and Test
+    name: Build and Test Master
     runs-on: ubuntu-latest
     strategy:
       matrix:

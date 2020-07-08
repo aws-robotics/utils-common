@@ -1,4 +1,4 @@
-name: Test utils_common
+name: Build & Test utils_common release-latest
 on:
   # to test
   pull_request:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_and_test:
-    name: Build and Test
+    name: Build and Test Release Latest
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,7 +31,7 @@ jobs:
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
-        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/e17c4cce328969eae6775b23a5b4cabc9754de93/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
         package-name: aws_common
         source-ros-binary-installation: ${{ matrix.ros_distro }}
     - uses: actions/upload-artifact@v1
