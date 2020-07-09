@@ -31,8 +31,6 @@ jobs:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
-    - if: ${{ matrix.ros_distro == 'dashing' }}
-      run: export ROS_VERSION=2
     - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
       run: export ROS_VERSION=1 && sudo apt update && sudo apt install -y python-catkin-tools
     - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
@@ -42,6 +40,8 @@ jobs:
         vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
         package-name: aws_common
         extra-cmake-args: --cmake-target tests
+    - if: ${{ matrix.ros_distro == 'dashing' }}
+      run: export ROS_VERSION=2 && python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - if: ${{ matrix.ros_distro == 'dashing' }}
       uses: ros-tooling/action-ros-ci@0.0.17
       with:
