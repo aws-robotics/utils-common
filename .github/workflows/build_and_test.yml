@@ -33,22 +33,18 @@ jobs:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
-    - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
-      run: export ROS_VERSION=1 && sudo apt update && sudo apt install -y python-catkin-tools
-      uses: ros-tooling/action-ros-ci@0.0.17
-      with:
-        source-ros-binary-installation: ${{ matrix.ros_distro }}
-        package-name: aws_common
-        vcs-repo-file-url: ''
-        extra-cmake-args: --cmake-target tests
     - if: ${{ matrix.ros_distro == 'dashing' }}
       run: export ROS_VERSION=2
-      run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
-      uses: ros-tooling/action-ros-ci@0.0.17
+    - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
+      run: export ROS_VERSION=1 && sudo apt update && sudo apt install -y python-catkin-tools
+    - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
+    - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         vcs-repo-file-url: ''
+        if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
+        extra-cmake-args: --cmake-target tests
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}

@@ -31,8 +31,11 @@ jobs:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
+    - if: ${{ matrix.ros_distro == 'dashing' }}
+      run: export ROS_VERSION=2
     - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
       run: export ROS_VERSION=1 && sudo apt update && sudo apt install -y python-catkin-tools
+    - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
       uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
@@ -40,8 +43,6 @@ jobs:
         package-name: aws_common
         extra-cmake-args: --cmake-target tests
     - if: ${{ matrix.ros_distro == 'dashing' }}
-      run: export ROS_VERSION=2
-      run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
       uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
