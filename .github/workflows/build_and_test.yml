@@ -42,6 +42,7 @@ jobs:
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
+        vcs-repo-file-url: ''
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
