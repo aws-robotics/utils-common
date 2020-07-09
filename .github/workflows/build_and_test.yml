@@ -41,7 +41,6 @@ jobs:
       with:
         vcs-repo-file-url: ''
         package-name: aws_common
-    - run: colcon test-result --all --verbose
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}

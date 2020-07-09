@@ -40,7 +40,6 @@ jobs:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
         package-name: aws_common
-    - run: colcon test-result --all --verbose
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
