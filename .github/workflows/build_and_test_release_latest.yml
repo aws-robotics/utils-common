@@ -35,12 +35,19 @@ jobs:
       run: export ROS_VERSION=2
     - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
       run: export ROS_VERSION=1 && sudo apt update && sudo apt install -y python-catkin-tools
-    - uses: ros-tooling/action-ros-ci@0.0.17
+    - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
+      uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
         package-name: aws_common
         extra-cmake-args: --cmake-target tests
+    - if: ${{ matrix.ros_distro == 'dashing' }}
+      uses: ros-tooling/action-ros-ci@0.0.17
+      with:
+        source-ros-binary-installation: ${{ matrix.ros_distro }}
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
+        package-name: aws_common
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
