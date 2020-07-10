@@ -40,8 +40,8 @@ jobs:
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
-        vcs-repo-file-url: ''
         extra-cmake-args: --cmake-target tests
+        vcs-repo-file-url: ''
     - if: ${{ matrix.ros_distro == 'dashing' }}
       run: export ROS_VERSION=2 && python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - if: ${{ matrix.ros_distro == 'dashing' }}

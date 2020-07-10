@@ -37,17 +37,17 @@ jobs:
       uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
-        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
         package-name: aws_common
         extra-cmake-args: --cmake-target tests
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
     - if: ${{ matrix.ros_distro == 'dashing' }}
       run: export ROS_VERSION=2 && python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - if: ${{ matrix.ros_distro == 'dashing' }}
       uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
-        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
         package-name: aws_common
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
