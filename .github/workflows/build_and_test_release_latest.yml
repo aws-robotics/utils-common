@@ -25,7 +25,9 @@ jobs:
     steps:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    # Needed for the CMakeLists.txt setup
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
+    # Needed for the CMakeLists.txt setup
     - run: export ROS_VERSION=2
     - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - uses: ros-tooling/action-ros-ci@0.0.17
@@ -57,9 +59,10 @@ jobs:
     steps:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    # Needed for the CMakeLists.txt setup
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
+    # Needed for the CMakeLists.txt setup
     - run: export ROS_VERSION=1
-    - run: sudo apt update && sudo apt install -y python-catkin-tools
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
