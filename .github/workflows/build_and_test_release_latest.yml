@@ -32,12 +32,12 @@ jobs:
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
-        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
+        vcs-repo-file-url: ${{ github.workspace }}/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
         path: ros_ws/log
-        
+
   build_and_test_release_latest_ros1:
     name: Build and Test Release Latest ROS 1
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: --cmake-target tests
-        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
+        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
