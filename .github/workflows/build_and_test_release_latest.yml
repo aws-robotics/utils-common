@@ -28,7 +28,7 @@ jobs:
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
     - run: export ROS_VERSION=2
     - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
-      uses: ros-tooling/action-ros-ci@0.0.17
+    - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
@@ -37,6 +37,7 @@ jobs:
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
         path: ros_ws/log
+        
   build_and_test_release_latest_ros1:
     name: Build and Test Release Latest ROS 1
     runs-on: ubuntu-latest
@@ -59,7 +60,7 @@ jobs:
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
     - run: export ROS_VERSION=1
     - run: sudo apt update && sudo apt install -y python-catkin-tools
-      uses: ros-tooling/action-ros-ci@0.0.17
+    - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
