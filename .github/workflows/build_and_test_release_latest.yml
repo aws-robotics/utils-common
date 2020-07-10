@@ -8,18 +8,13 @@ on:
     - cron:  '0 * * * *'
 
 jobs:
-  build_and_test:
-    name: Build and Test Release Latest
+  build_and_test_release_latest_ros2:
+    name: Build and Test Release Latest ROS 2
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false  # for debug
       matrix:
-        ros_distro: [kinetic, melodic, dashing]
+        ros_distro: [dashing]
         include:
-        - ros_distro: kinetic
-          ubuntu_distro: xenial
-        - ros_distro: melodic
-          ubuntu_distro: bionic
         - ros_distro: dashing
           ubuntu_distro: bionic
     container:
@@ -31,22 +26,44 @@ jobs:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
     - run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
-    - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
-      run: export ROS_VERSION=1 && sudo apt update && sudo apt install -y python-catkin-tools
-    - if: ${{ matrix.ros_distro == 'kinetic' || matrix.ros_distro == 'melodic' }}
+    - run: export ROS_VERSION=2
+    - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
+      uses: ros-tooling/action-ros-ci@0.0.17
+      with:
+        source-ros-binary-installation: ${{ matrix.ros_distro }}
+        package-name: aws_common
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
+    - uses: actions/upload-artifact@v1
+      with:
+        name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
+        path: ros_ws/log
+  build_and_test_release_latest_ros1:
+    name: Build and Test Release Latest ROS 1
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ros_distro: [kinetic, melodic]
+        include:
+        - ros_distro: kinetic
+          ubuntu_distro: xenial
+        - ros_distro: melodic
+          ubuntu_distro: bionic
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
+    outputs:
+      build_result: ${{ steps.build.outcome }}
+      test_result: ${{ steps.test.outcome }}
+    steps:
+    # TODO(setup-ros-docker#7): calling chown is necessary for now
+    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    - run: export ROS_DISTRO=${{ matrix.ros_distro }}
+    - run: export ROS_VERSION=1
+    - run: sudo apt update && sudo apt install -y python-catkin-tools
       uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: --cmake-target tests
-        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
-    - if: ${{ matrix.ros_distro == 'dashing' }}
-      run: export ROS_VERSION=2 && python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
-    - if: ${{ matrix.ros_distro == 'dashing' }}
-      uses: ros-tooling/action-ros-ci@0.0.17
-      with:
-        source-ros-binary-installation: ${{ matrix.ros_distro }}
-        package-name: aws_common
         vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/75e15be5b8a6b6fa2246a0b7513b5f527efa85a3/.github/workflows/release_latest.repos" # "${{ github.workspace }}/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
@@ -57,14 +74,12 @@ jobs:
     container:
       image: ubuntu:bionic
     needs:
-    - build_and_test
-    if: always()  # run even if the dependent jobs have failed to log failures
-    # Allow build reports to fail on pull requests.
-    # When a contribution is made on a fork, the secrets will not be available,
-    # and this step will be failing. This is acceptable.
-    # On the other end, we want to be notified if this happens on merge, or
-    # on schedule.
-    continue-on-error: ${{ github.event_name == 'pull_request'}}
+    - build_and_test_release_latest_ros1
+    - build_and_test_release_latest_ros2
+    # serves two purposes:
+    # - Don't skip this job if dependent jobs have failed.
+    # - On a fork, we don't have the secrets to authenticate to AWS.
+    if: ${{ ! github.event.repository.fork && ! github.event.pull_request.head.repo.fork }}
     steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
