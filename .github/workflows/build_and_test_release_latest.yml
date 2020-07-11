@@ -34,7 +34,8 @@ jobs:
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
-        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
+        # schedule only works for the master branch, so specify release-latest
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/master/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
@@ -68,7 +69,8 @@ jobs:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: --cmake-target tests
-        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
+        # schedule only works for the master branch, so specify release-latest
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/master/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
