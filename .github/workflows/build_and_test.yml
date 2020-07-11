@@ -11,7 +11,7 @@ on:
     - cron:  '0 * * * *'
 
 jobs:
-  build_and_test:
+  build_and_test_master_ros2:
     name: Build and Test Master ROS 2
     runs-on: ubuntu-latest
     strategy:
@@ -44,7 +44,7 @@ jobs:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
         path: ros_ws/log
 
-  build_and_test:
+  build_and_test_master_ros1:
     name: Build and Test Master ROS 1
     runs-on: ubuntu-latest
     strategy:
