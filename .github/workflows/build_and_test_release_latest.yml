@@ -1,0 +1,110 @@
+name: Build & Test utils_common release-latest
+on:
+  # to test
+  pull_request:
+  schedule:
+    # Run every hour. This helps detect flakiness,
+    # and broken external dependencies.
+    - cron:  '0 * * * *'
+
+jobs:
+  build_and_test_release_latest_ros2:
+    name: Build and Test Release Latest ROS 2
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ros_distro: [dashing]
+        include:
+        - ros_distro: dashing
+          ubuntu_distro: bionic
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
+    outputs:
+      build_result: ${{ steps.build.outcome }}
+      test_result: ${{ steps.test.outcome }}
+    steps:
+    # TODO(setup-ros-docker#7): calling chown is necessary for now
+    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    # Needed for the CMakeLists.txt setup
+    - run: export ROS_DISTRO=${{ matrix.ros_distro }}
+    # Needed for the CMakeLists.txt setup
+    - run: export ROS_VERSION=2
+    - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
+    - uses: ros-tooling/action-ros-ci@0.0.17
+      with:
+        source-ros-binary-installation: ${{ matrix.ros_distro }}
+        package-name: aws_common
+        # schedule only works for the master branch, so specify release-latest
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/master/.github/workflows/release_latest.repos"
+    - uses: actions/upload-artifact@v1
+      with:
+        name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
+        path: ros_ws/log
+
+  build_and_test_release_latest_ros1:
+    name: Build and Test Release Latest ROS 1
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ros_distro: [kinetic, melodic]
+        include:
+        - ros_distro: kinetic
+          ubuntu_distro: xenial
+        - ros_distro: melodic
+          ubuntu_distro: bionic
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
+    outputs:
+      build_result: ${{ steps.build.outcome }}
+      test_result: ${{ steps.test.outcome }}
+    steps:
+    # TODO(setup-ros-docker#7): calling chown is necessary for now
+    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    # Needed for the CMakeLists.txt setup
+    - run: export ROS_DISTRO=${{ matrix.ros_distro }}
+    # Needed for the CMakeLists.txt setup
+    - run: export ROS_VERSION=1
+    - uses: ros-tooling/action-ros-ci@0.0.17
+      with:
+        source-ros-binary-installation: ${{ matrix.ros_distro }}
+        package-name: aws_common
+        extra-cmake-args: --cmake-target tests
+        # schedule only works for the master branch, so specify release-latest
+        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/master/.github/workflows/release_latest.repos"
+    - uses: actions/upload-artifact@v1
+      with:
+        name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
+        path: ros_ws/log
+  log_workflow_status_to_cloudwatch:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:bionic
+    needs:
+    - build_and_test_release_latest_ros1
+    - build_and_test_release_latest_ros2
+    # serves two purposes:
+    # - Don't skip this job if dependent jobs have failed.
+    # - On a fork, we don't have the secrets to authenticate to AWS.
+    if: ${{ ! github.event.repository.fork && ! github.event.pull_request.head.repo.fork }}
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    - uses: ros-tooling/action-cloudwatch-metrics@0.0.4
+      with:
+        metric-dimensions: >-
+          [
+            { "Name": "github.event_name", "Value": "${{ github.event_name }}" },
+            { "Name": "github.ref", "Value": "release-latest" },
+            { "Name": "github.repository", "Value": "${{ github.repository }}" }
+          ]
+        # Checks if any of the jobs have failed.
+        #
+        # needs.*.result is returns the list of all success statuses as an
+        # array, i.e. ['success', 'failure, 'success']
+        # join() converts the array to a string 'successfailuresuccess'
+        # contains() checks whether the string contains failure
+        metric-value: ${{ ! contains(join(needs.*.result, ''), 'failure') && ! contains(join(needs.*.result, ''), 'cancelled') }}
