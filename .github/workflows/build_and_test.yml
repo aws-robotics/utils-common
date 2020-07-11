@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - release-latest
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
