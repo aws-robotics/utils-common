@@ -49,13 +49,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ros_distro: [kinetic, melodic, dashing]
+        ros_distro: [kinetic, melodic]
         include:
         - ros_distro: kinetic
           ubuntu_distro: xenial
         - ros_distro: melodic
-          ubuntu_distro: bionic
-        - ros_distro: dashing
           ubuntu_distro: bionic
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
