@@ -1,5 +1,6 @@
 name: Build & Test utils_common release-latest
 on:
+  pull_request:
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
@@ -27,7 +28,6 @@ jobs:
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
     # Needed for the CMakeLists.txt setup
     - run: export ROS_VERSION=2
-    - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}

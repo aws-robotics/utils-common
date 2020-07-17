@@ -1,4 +1,4 @@
-name: Test utils_common
+name: Build & Test utils_common
 on:
   pull_request:
   push:
@@ -32,7 +32,6 @@ jobs:
     # Needed for the CMakeLists.txt setup
     - run: export ROS_VERSION=2
     # Needed for missing dependencies
-    - run: python3 -m pip install -U --force-reinstall importlib-resources importlib-metadata
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
