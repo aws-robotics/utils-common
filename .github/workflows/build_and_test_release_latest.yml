@@ -1,6 +1,5 @@
 name: Build & Test utils_common release-latest
 on:
-  pull_request:
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
