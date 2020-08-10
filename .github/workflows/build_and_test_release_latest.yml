@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_test_release_latest:
-    name: Build and Test Release Latest ROS ${{ matrix.ros_version }}
+    name: Build and Test Release Latest ROS ${{ matrix.ros_version }} ${{ matrix.ros_distro }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
