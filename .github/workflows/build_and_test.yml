@@ -1,4 +1,4 @@
-name: Build & Test utils_common
+name: Build & Test
 on:
   pull_request:
   push:

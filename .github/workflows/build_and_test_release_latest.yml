@@ -1,4 +1,4 @@
-name: Build & Test utils_common release-latest
+name: Build & Test release-latest
 on:
   schedule:
     # Run every hour. This helps detect flakiness,
