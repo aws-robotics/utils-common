@@ -10,6 +10,7 @@ jobs:
     name: Build and Test Release Latest ROS ${{ matrix.ros_version }} ${{ matrix.ros_distro }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ros_distro: [kinetic, melodic, dashing]
         include:
