@@ -21,14 +21,17 @@ jobs:
         - ros_distro: kinetic
           ubuntu_distro: xenial
           ros_version: 1
+          # This is necessary for a pure-cmake (non- catkin or ament) package to build the tests
           extra_cmake_args: --cmake-target tests
         - ros_distro: melodic
           ubuntu_distro: bionic
           ros_version: 1
+          # This is necessary for a pure-cmake (non-catkin or ament) package to build the tests
           extra_cmake_args: --cmake-target tests
         - ros_distro: dashing
           ubuntu_distro: bionic
           ros_version: 2
+          # The ROS2 build uses ament-based testing macros, so doesn't need the workaround ROS1 does
           extra_cmake_args: ""
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
