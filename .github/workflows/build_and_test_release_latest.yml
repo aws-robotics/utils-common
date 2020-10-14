@@ -38,13 +38,16 @@ jobs:
     - run: export ROS_DISTRO=${{ matrix.ros_distro }}
     # Needed for the CMakeLists.txt setup
     - run: export ROS_VERSION=${{ matrix.ros_version }}
+    # Needed to access the vcs repos file from the workspace
+    - name: Checkout source
+      uses: actions/checkout@v2
     - uses: ros-tooling/action-ros-ci@0.0.17
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: ${{ matrix.extra_cmake_args }}
         # schedule runs against the default branch (master), so specify release-latest via repos file
-        vcs-repo-file-url: "https://raw.githubusercontent.com/aws-robotics/utils-common/master/.github/workflows/release_latest.repos"
+        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
