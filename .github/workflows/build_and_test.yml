@@ -11,12 +11,13 @@ on:
 
 jobs:
   build_and_test_master:
-    name: Build and Test Master ROS ${{ matrix.ros_version }} ${{ matrix.ros_distro }}
+    name: Build and Test ROS ${{ matrix.ros_version }} ${{ matrix.ros_distro }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ros_distro: [kinetic, melodic, dashing]
+        build_type: [master, release_latest]
         include:
         - ros_distro: kinetic
           ubuntu_distro: xenial
@@ -32,22 +33,33 @@ jobs:
           extra_cmake_args: ""
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
-    outputs:
-      build_result: ${{ steps.build.outcome }}
-      test_result: ${{ steps.test.outcome }}
+      env:
+        # Needed for the CMakeLists.txt setup
+        ROS_DISTRO: ${{ matrix.ros_distro }}
+        ROS_VERSION: ${{ matrix.ros_version }}
     steps:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
-    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
-    # Needed for the CMakeLists.txt setup
-    - run: export ROS_DISTRO=${{ matrix.ros_distro }}
-    # Needed for the CMakeLists.txt setup
-    - run: export ROS_VERSION=${{ matrix.ros_version }}
-    - uses: ros-tooling/action-ros-ci@0.0.17
+    - name: setup-ros-docker workaround
+      run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    # Needed to access the vcs repos file from the workspace
+    - name: Checkout source
+      uses: actions/checkout@v2
+    - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
+      uses: ros-tooling/action-ros-ci@0.0.17
+      if: ${{ matrix.build_type == 'master' }}
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: ${{ matrix.extra_cmake_args }}
-        vcs-repo-file-url: ''
+        vcs-repo-file-url: ""
+    - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
+      uses: ros-tooling/action-ros-ci@0.0.17
+      if: ${{ matrix.build_type == 'release_latest' }}
+      with:
+        source-ros-binary-installation: ${{ matrix.ros_distro }}
+        package-name: aws_common
+        extra-cmake-args: ${{ matrix.extra_cmake_args }}
+        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
