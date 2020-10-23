@@ -10,7 +10,7 @@ on:
     - cron:  '0 * * * *'
 
 jobs:
-  build_and_test_master:
+  build_and_test:
     name: Build and Test ROS ${{ matrix.ros_version }} ${{ matrix.ros_distro }} ${{ matrix.build_type }}
     runs-on: ubuntu-latest
     strategy:
@@ -61,7 +61,10 @@ jobs:
         package-name: aws_common
         extra-cmake-args: ${{ matrix.extra_cmake_args }}
         vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
-    - uses: actions/upload-artifact@v1
+    - name: Upload workflow colcon logs as artifacts
+      uses: actions/upload-artifact@v1
+      # Only upload if the master build_type ran, don't upload if non-scheduled for release_latest build_type
+      if: ${{ matrix.build_type == 'master' || github.event_name == 'schedule' }}
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
         path: ros_ws/log
@@ -71,7 +74,7 @@ jobs:
     container:
       image: ubuntu:bionic
     needs:
-    - build_and_test_master
+    - build_and_test
     # Don't skip if prior steps failed, but don't run on a fork because it won't have access to AWS secrets
     if: ${{ always() && ! github.event.repository.fork && ! github.event.pull_request.head.repo.fork }}
     steps:
