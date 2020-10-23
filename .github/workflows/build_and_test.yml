@@ -63,7 +63,7 @@ jobs:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: ${{ matrix.extra_cmake_args }}
-        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release-latest.repos"
+        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
     - name: Upload workflow colcon logs as artifacts
       uses: actions/upload-artifact@v1
       # Don't upload if release-latest didn't run (no artifacts to upload)
