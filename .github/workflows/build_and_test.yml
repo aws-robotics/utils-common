@@ -43,6 +43,7 @@ jobs:
     - name: setup-ros-docker workaround
       run: sudo chown -R rosbuild:rosbuild "$HOME" .
     # Needed to access the vcs repos file from the workspace
+    # This allows the workflow to test the release-latest branch
     - name: Checkout source
       uses: actions/checkout@v2
     # master workflow: scheduled and PRs with the correct args
