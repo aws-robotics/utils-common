@@ -7,6 +7,7 @@ on:
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
+    # Only triggered for the master branch
     - cron:  '0 * * * *'
 
 jobs:
@@ -44,17 +45,18 @@ jobs:
     # Needed to access the vcs repos file from the workspace
     - name: Checkout source
       uses: actions/checkout@v2
+    # master workflow: scheduled and PRs with the correct args
     - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
-      uses: ros-tooling/action-ros-ci@0.0.17
+      uses: ros-tooling/action-ros-ci@0.0.19
       if: ${{ matrix.build_type == 'master' }}
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: ${{ matrix.extra_cmake_args }}
         vcs-repo-file-url: ""
-    # Only runs when scheduled
+    # release-latest workflow: scheduled only with the correct args
     - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
-      uses: ros-tooling/action-ros-ci@0.0.17
+      uses: ros-tooling/action-ros-ci@0.0.19
       if: ${{ matrix.build_type == 'release-latest' && github.event_name == 'schedule' }}
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
@@ -63,7 +65,7 @@ jobs:
         vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release-latest.repos"
     - name: Upload workflow colcon logs as artifacts
       uses: actions/upload-artifact@v1
-      # Only upload if the master build_type ran, don't upload if non-scheduled for release-latest build_type
+      # Don't upload if release-latest didn't run (no artifacts to upload)
       if: ${{ matrix.build_type == 'master' || github.event_name == 'schedule' }}
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
