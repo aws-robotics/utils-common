@@ -47,7 +47,7 @@ jobs:
       uses: actions/checkout@v2
     # master workflow: scheduled and PRs with the correct args
     - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
-      uses: ros-tooling/action-ros-ci@0.0.19
+      uses: ros-tooling/action-ros-ci@0.0.17
       if: ${{ matrix.build_type == 'master' }}
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
@@ -56,7 +56,7 @@ jobs:
         vcs-repo-file-url: ""
     # release-latest workflow: scheduled only with the correct args
     - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
-      uses: ros-tooling/action-ros-ci@0.0.19
+      uses: ros-tooling/action-ros-ci@0.0.17
       if: ${{ matrix.build_type == 'release-latest' && github.event_name == 'schedule' }}
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
