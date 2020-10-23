@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         ros_distro: [kinetic, melodic, dashing]
-        build_type: [master, release_latest]
+        build_type: [master, release-latest]
         include:
         - ros_distro: kinetic
           ubuntu_distro: xenial
@@ -55,15 +55,15 @@ jobs:
     # Only runs when scheduled
     - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
       uses: ros-tooling/action-ros-ci@0.0.17
-      if: ${{ matrix.build_type == 'release_latest' && github.event_name == 'schedule' }}
+      if: ${{ matrix.build_type == 'release-latest' && github.event_name == 'schedule' }}
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: ${{ matrix.extra_cmake_args }}
-        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release_latest.repos"
+        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release-latest.repos"
     - name: Upload workflow colcon logs as artifacts
       uses: actions/upload-artifact@v1
-      # Only upload if the master build_type ran, don't upload if non-scheduled for release_latest build_type
+      # Only upload if the master build_type ran, don't upload if non-scheduled for release-latest build_type
       if: ${{ matrix.build_type == 'master' || github.event_name == 'schedule' }}
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
@@ -86,6 +86,12 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     - uses: ros-tooling/action-cloudwatch-metrics@0.0.4
       with:
+        metric-dimensions: >-
+          [
+            { "Name": "github.event_name", "Value": "${{ github.event_name }}" },
+            { "Name": "github.ref", "Value": "build_and_test" },
+            { "Name": "github.repository", "Value": "${{ github.repository }}" }
+          ]
         # Checks if any of the jobs have failed.
         #
         # needs.*.result is returns the list of all success statuses as an
