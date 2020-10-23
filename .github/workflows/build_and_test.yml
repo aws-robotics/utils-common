@@ -7,16 +7,18 @@ on:
   schedule:
     # Run every hour. This helps detect flakiness,
     # and broken external dependencies.
+    # Only triggered for the master branch
     - cron:  '0 * * * *'
 
 jobs:
-  build_and_test_master:
-    name: Build and Test Master ROS ${{ matrix.ros_version }} ${{ matrix.ros_distro }}
+  build_and_test:
+    name: Build and Test ROS ${{ matrix.ros_version }} ${{ matrix.ros_distro }} ${{ matrix.build_type }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ros_distro: [kinetic, melodic, dashing]
+        build_type: [master, release-latest]
         include:
         - ros_distro: kinetic
           ubuntu_distro: xenial
@@ -32,23 +34,40 @@ jobs:
           extra_cmake_args: ""
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}-ros-base-latest
-    outputs:
-      build_result: ${{ steps.build.outcome }}
-      test_result: ${{ steps.test.outcome }}
+      env:
+        # Needed for the CMakeLists.txt setup
+        ROS_DISTRO: ${{ matrix.ros_distro }}
+        ROS_VERSION: ${{ matrix.ros_version }}
     steps:
     # TODO(setup-ros-docker#7): calling chown is necessary for now
-    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
-    # Needed for the CMakeLists.txt setup
-    - run: export ROS_DISTRO=${{ matrix.ros_distro }}
-    # Needed for the CMakeLists.txt setup
-    - run: export ROS_VERSION=${{ matrix.ros_version }}
-    - uses: ros-tooling/action-ros-ci@0.0.17
+    - name: setup-ros-docker workaround
+      run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    # Needed to access the vcs repos file from the workspace
+    # This allows the workflow to test the release-latest branch
+    - name: Checkout source
+      uses: actions/checkout@v2
+    # master workflow: scheduled and PRs with the correct args
+    - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
+      uses: ros-tooling/action-ros-ci@0.0.17
+      if: ${{ matrix.build_type == 'master' }}
       with:
         source-ros-binary-installation: ${{ matrix.ros_distro }}
         package-name: aws_common
         extra-cmake-args: ${{ matrix.extra_cmake_args }}
-        vcs-repo-file-url: ''
-    - uses: actions/upload-artifact@v1
+        vcs-repo-file-url: ""
+    # release-latest workflow: scheduled only with the correct args
+    - name: Build and test ${{ matrix.ros_distro }} ${{ matrix.ros_version }} ${{ matrix.build_type }}
+      uses: ros-tooling/action-ros-ci@0.0.17
+      if: ${{ matrix.build_type == 'release-latest' && github.event_name == 'schedule' }}
+      with:
+        source-ros-binary-installation: ${{ matrix.ros_distro }}
+        package-name: aws_common
+        extra-cmake-args: ${{ matrix.extra_cmake_args }}
+        vcs-repo-file-url: "${{ github.workspace }}/.github/workflows/release-latest.repos"
+    - name: Upload workflow colcon logs as artifacts
+      uses: actions/upload-artifact@v1
+      # Don't upload if release-latest didn't run (no artifacts to upload)
+      if: ${{ matrix.build_type == 'master' || github.event_name == 'schedule' }}
       with:
         name: colcon-logs-${{ matrix.ubuntu_distro }}-ros-${{ matrix.ros_distro }}
         path: ros_ws/log
@@ -58,7 +77,7 @@ jobs:
     container:
       image: ubuntu:bionic
     needs:
-    - build_and_test_master
+    - build_and_test
     # Don't skip if prior steps failed, but don't run on a fork because it won't have access to AWS secrets
     if: ${{ always() && ! github.event.repository.fork && ! github.event.pull_request.head.repo.fork }}
     steps:
@@ -70,6 +89,12 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
     - uses: ros-tooling/action-cloudwatch-metrics@0.0.4
       with:
+        metric-dimensions: >-
+          [
+            { "Name": "github.event_name", "Value": "${{ github.event_name }}" },
+            { "Name": "github.ref", "Value": "build_and_test" },
+            { "Name": "github.repository", "Value": "${{ github.repository }}" }
+          ]
         # Checks if any of the jobs have failed.
         #
         # needs.*.result is returns the list of all success statuses as an
