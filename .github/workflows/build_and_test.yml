@@ -92,7 +92,7 @@ jobs:
         metric-dimensions: >-
           [
             { "Name": "github.event_name", "Value": "${{ github.event_name }}" },
-            { "Name": "github.ref", "Value": "build_and_test" },
+            { "Name": "github.ref", "Value": "${{ github.ref }}" },
             { "Name": "github.repository", "Value": "${{ github.repository }}" }
           ]
         # Checks if any of the jobs have failed.
