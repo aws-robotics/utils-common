@@ -28,7 +28,7 @@ AWSProfileProvider::AWSProfileProvider()
 {
   config_file_loader_ =
     std::shared_ptr<AWSProfileConfigLoader>(Aws::MakeShared<AWSConfigFileProfileConfigLoader>(
-      kProfileLogTag, GetConfigProfileFilename(), true));
+      kProfileLogTag, Aws::Auth::GetConfigProfileFilename(), true));
   config_file_loader_->Load();
   credentials_file_loader_ =
     std::shared_ptr<AWSProfileConfigLoader>(Aws::MakeShared<AWSConfigFileProfileConfigLoader>(

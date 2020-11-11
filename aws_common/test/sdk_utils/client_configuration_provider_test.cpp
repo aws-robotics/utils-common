@@ -14,6 +14,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <aws/core/Aws.h>
 #include <aws_common/sdk_utils/parameter_reader_mock.h>
 #include <aws_common/sdk_utils/client_configuration_provider.h>
 
@@ -128,7 +129,7 @@ client_conf_mutator g_client_conf_mutators[] =
   [](ClientConfiguration & config)->void { config.proxyPort = config.proxyPort + 2; },
   [](ClientConfiguration & config)->void { config.useDualStack =  ! config.useDualStack; },
   [](ClientConfiguration & config)->void { config.enableClockSkewAdjustment = ! config.enableClockSkewAdjustment; },
-  [](ClientConfiguration & config)->void { config.followRedirects = !config.followRedirects; },
+  [](ClientConfiguration & config)->void { config.followRedirects = (config.followRedirects == FollowRedirectsPolicy::NEVER ? FollowRedirectsPolicy::ALWAYS : FollowRedirectsPolicy::NEVER); },
   [](ClientConfiguration & config)->void { config.verifySSL = !config.verifySSL; }
 };
 INSTANTIATE_TEST_CASE_P(
@@ -139,6 +140,10 @@ INSTANTIATE_TEST_CASE_P(
 
 int main(int argc, char ** argv)
 {
+  Aws::SDKOptions options;
+  Aws::InitAPI(options);
   testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+  auto ret = RUN_ALL_TESTS();
+  Aws::ShutdownAPI(options);
+  return ret;
 }
