@@ -148,6 +148,9 @@ public:
     class_under_test->log_error_count_ = 0;
     class_under_test->log_fatal_count_ = 0;
   }
+  
+  void Flush() override {
+  }
 };
 
 TEST(TestAWSLogSystem, TestLogMethod)

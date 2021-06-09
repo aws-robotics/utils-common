@@ -31,20 +31,6 @@ using ::testing::SetArgReferee;
 using ::testing::Return;
 using Aws::AwsError;
 
-namespace Aws {
-namespace Auth {
-
-bool operator==(const AWSCredentials & left, const AWSCredentials & right)
-{
-  return (
-    (left.GetAWSAccessKeyId() == right.GetAWSAccessKeyId())
-    && (left.GetAWSSecretKey() == right.GetAWSSecretKey())
-    && (left.GetSessionToken() == right.GetSessionToken())
-  );
-}
-
-}  // namespace Auth
-}  // namespace Aws
 
 class ServiceCredentialsProviderFixture : public ::testing::Test
 {
