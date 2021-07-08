@@ -12,9 +12,7 @@ The source code is released under an [Apache 2.0].
 **Maintainer**: AWS RoboMaker, ros-contributions@amazon.com
 
 ### Supported ROS Distributions
-- Kinetic
 - Melodic
-- Dashing
 
 ### Build status
 * GitHub Action Status
